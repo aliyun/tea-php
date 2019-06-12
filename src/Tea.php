@@ -63,7 +63,6 @@ class Tea
     public static function doPsrRequest(RequestInterface $request, array $config = [])
     {
         $config['http_errors'] = false;
-        $config['debug']       = true;
 
         try {
             return self::client()->send(
@@ -89,7 +88,6 @@ class Tea
     public static function doPsrRequestAsync(RequestInterface $request, array $config = [])
     {
         $config['http_errors'] = false;
-        $config['debug']       = true;
 
         return self::client()->sendAsync(
             $request,

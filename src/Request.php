@@ -25,7 +25,7 @@ class Request
     /**
      * @var string
      */
-    public $pathname;
+    public $pathname = '/';
 
     /**
      * @var array
@@ -47,17 +47,33 @@ class Request
      */
     public function getPsrRequest()
     {
+        if (!$this->protocol) {
+            throw new InvalidArgumentException('Protocol can not be empty.');
+        }
+
         if (!isset($this->headers['host'])) {
             throw new InvalidArgumentException('Host can not be empty.');
         }
 
+        if (!$this->pathname) {
+            throw new InvalidArgumentException('Pathname can not be empty.');
+        }
+
+        if (!$this->method) {
+            throw new InvalidArgumentException('Method can not be empty.');
+        }
+
         $uri     = $this->protocol . '://' . $this->headers['host'] . $this->pathname;
         $request = new PsrRequest(
-            $this->method,
+            strtoupper($this->method),
             $uri,
             $this->headers,
             $this->body
         );
+
+        if (!is_array($this->query)) {
+            throw new InvalidArgumentException('Query must be array.');
+        }
 
         if ($this->query) {
             $request = $request->withUri(

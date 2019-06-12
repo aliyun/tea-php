@@ -7,6 +7,7 @@ use Countable;
 use ArrayAccess;
 use IteratorAggregate;
 use JmesPath\Env as JmesPath;
+use Songshenzong\Support\Strings;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Psr7\Response as PsrResponse;
 
@@ -50,7 +51,11 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
             $response->getReasonPhrase()
         );
 
-        $this->dot = new Dot($this->toArray());
+        if (Strings::isJson((string)$this->getBody())) {
+            $this->dot = new Dot($this->toArray());
+        } else {
+            $this->dot = new Dot();
+        }
     }
 
     /**
