@@ -5,8 +5,8 @@ namespace HttpX\Tea;
 use GuzzleHttp\Client;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Request;
 use HttpX\Tea\Exception\TeaError;
+use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Promise\PromiseInterface;
@@ -45,7 +45,6 @@ class Tea
 
     /**
      * @param RequestInterface $request
-     *
      * @param array            $config
      *
      * @return Response
@@ -75,7 +74,7 @@ class Tea
     {
         $stack = HandlerStack::create();
 
-        $stack->push(Middleware::mapResponse(static function(ResponseInterface $response) {
+        $stack->push(Middleware::mapResponse(static function (ResponseInterface $response) {
             return new Response($response);
         }));
 
@@ -113,9 +112,54 @@ class Tea
     }
 
     /**
-     * @param string     $uri
-     * @param string     $key
-     * @param mixed|null $default
+     * @param string              $method
+     * @param string|UriInterface $uri
+     * @param array               $headers
+     * @param null                $body
+     * @param string              $version
+     *
+     * @return Response
+     */
+    public static function request($method, $uri, $headers = [], $body = null, $version = '1.1')
+    {
+        $request = new \GuzzleHttp\Psr7\Request($method, $uri, $headers, $body, $version);
+
+        return self::doPsrRequest($request);
+    }
+
+    /**
+     * @param string              $method
+     * @param string|UriInterface $uri
+     * @param array               $headers
+     * @param null                $body
+     * @param string              $version
+     *
+     * @return PromiseInterface
+     */
+    public static function requestAsync($method, $uri, $headers = [], $body = null, $version = '1.1')
+    {
+        $request = new \GuzzleHttp\Psr7\Request($method, $uri, $headers, $body, $version);
+
+        return self::doPsrRequestAsync($request);
+    }
+
+    /**
+     * @param string|UriInterface $uri
+     * @param array               $headers
+     * @param null                $body
+     * @param string              $version
+     *
+     * @return mixed|null
+     */
+    public static function getHeaders($uri, $headers = [], $body = null, $version = '1.1')
+    {
+        return self::request('HEAD', $uri, $headers, $body, $version)->getHeaders();
+    }
+
+    /**
+     * @param string|UriInterface $uri
+     * @param string              $key
+     * @param mixed|null          $default
      *
      * @return mixed|null
      */
@@ -124,29 +168,6 @@ class Tea
         $headers = self::getHeaders($uri);
 
         return isset($headers[$key][0]) ? $headers[$key][0] : $default;
-    }
-
-    /**
-     * @param string $uri
-     *
-     * @return mixed|null
-     */
-    public static function getHeaders($uri)
-    {
-        return self::request('HEAD', $uri)->getHeaders();
-    }
-
-    /**
-     * @param string $method
-     * @param string $uri
-     *
-     * @return Response
-     */
-    public static function request($method, $uri)
-    {
-        $request = new Request($method, $uri);
-
-        return self::doPsrRequest($request);
     }
 
     /**
