@@ -5,8 +5,9 @@ namespace HttpX\Tea;
 use GuzzleHttp\Client;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Request;
+use Songshenzong\Support\Arrays;
 use HttpX\Tea\Exception\TeaError;
+use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Promise\PromiseInterface;
@@ -45,7 +46,6 @@ class Tea
 
     /**
      * @param RequestInterface $request
-     *
      * @param array            $config
      *
      * @return Response
@@ -69,19 +69,23 @@ class Tea
     }
 
     /**
+     * @param array $config
+     *
      * @return Client
      */
-    public static function client()
+    public static function client(array $config = [])
     {
         $stack = HandlerStack::create();
 
-        $stack->push(Middleware::mapResponse(static function(ResponseInterface $response) {
+        $stack->push(Middleware::mapResponse(static function (ResponseInterface $response) {
             return new Response($response);
         }));
 
         self::$config['handler'] = $stack;
 
-        return new Client(self::$config);
+        $new_config = Arrays::merge([self::$config, $config]);
+
+        return new Client($new_config);
     }
 
     /**
@@ -113,40 +117,55 @@ class Tea
     }
 
     /**
-     * @param string     $uri
-     * @param string     $key
-     * @param mixed|null $default
+     * @param string              $method
+     * @param string|UriInterface $uri
+     * @param array               $options
+     *
+     * @return Response
+     * @throws GuzzleException
+     */
+    public static function request($method, $uri, $options = [])
+    {
+        return self::client()->request($method, $uri, $options);
+    }
+
+    /**
+     * @param string              $method
+     * @param string|UriInterface $uri
+     * @param array               $options
+     *
+     * @return PromiseInterface
+     */
+    public static function requestAsync($method, $uri, $options = [])
+    {
+        return self::client()->requestAsync($method, $uri, $options);
+    }
+
+    /**
+     * @param string|UriInterface $uri
+     * @param array               $options
      *
      * @return mixed|null
+     * @throws GuzzleException
+     */
+    public static function getHeaders($uri, $options = [])
+    {
+        return self::request('HEAD', $uri, $options)->getHeaders();
+    }
+
+    /**
+     * @param string|UriInterface $uri
+     * @param string              $key
+     * @param mixed|null          $default
+     *
+     * @return mixed|null
+     * @throws GuzzleException
      */
     public static function getHeader($uri, $key, $default = null)
     {
         $headers = self::getHeaders($uri);
 
         return isset($headers[$key][0]) ? $headers[$key][0] : $default;
-    }
-
-    /**
-     * @param string $uri
-     *
-     * @return mixed|null
-     */
-    public static function getHeaders($uri)
-    {
-        return self::request('HEAD', $uri)->getHeaders();
-    }
-
-    /**
-     * @param string $method
-     * @param string $uri
-     *
-     * @return Response
-     */
-    public static function request($method, $uri)
-    {
-        $request = new Request($method, $uri);
-
-        return self::doPsrRequest($request);
     }
 
     /**
