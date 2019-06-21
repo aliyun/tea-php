@@ -5,6 +5,7 @@ namespace HttpX\Tea;
 use GuzzleHttp\Client;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
+use Songshenzong\Support\Arrays;
 use HttpX\Tea\Exception\TeaError;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\RequestInterface;
@@ -68,9 +69,11 @@ class Tea
     }
 
     /**
+     * @param array $config
+     *
      * @return Client
      */
-    public static function client()
+    public static function client(array $config = [])
     {
         $stack = HandlerStack::create();
 
@@ -80,7 +83,9 @@ class Tea
 
         self::$config['handler'] = $stack;
 
-        return new Client(self::$config);
+        $new_config = Arrays::merge([self::$config, $config]);
+
+        return new Client($new_config);
     }
 
     /**
@@ -114,46 +119,38 @@ class Tea
     /**
      * @param string              $method
      * @param string|UriInterface $uri
-     * @param array               $headers
-     * @param null                $body
-     * @param string              $version
+     * @param array               $options
      *
      * @return Response
+     * @throws GuzzleException
      */
-    public static function request($method, $uri, $headers = [], $body = null, $version = '1.1')
+    public static function request($method, $uri, $options = [])
     {
-        $request = new \GuzzleHttp\Psr7\Request($method, $uri, $headers, $body, $version);
-
-        return self::doPsrRequest($request);
+        return self::client()->request($method, $uri, $options);
     }
 
     /**
      * @param string              $method
      * @param string|UriInterface $uri
-     * @param array               $headers
-     * @param null                $body
-     * @param string              $version
+     * @param array               $options
      *
      * @return PromiseInterface
      */
-    public static function requestAsync($method, $uri, $headers = [], $body = null, $version = '1.1')
+    public static function requestAsync($method, $uri, $options = [])
     {
-        $request = new \GuzzleHttp\Psr7\Request($method, $uri, $headers, $body, $version);
-
-        return self::doPsrRequestAsync($request);
+        return self::client()->requestAsync($method, $uri, $options);
     }
 
     /**
      * @param string|UriInterface $uri
-     * @param array               $headers
-     * @param null                $body
-     * @param string              $version
+     * @param array               $options
      *
      * @return mixed|null
+     * @throws GuzzleException
      */
-    public static function getHeaders($uri, $headers = [], $body = null, $version = '1.1')
+    public static function getHeaders($uri, $options = [])
     {
-        return self::request('HEAD', $uri, $headers, $body, $version)->getHeaders();
+        return self::request('HEAD', $uri, $options)->getHeaders();
     }
 
     /**
@@ -162,6 +159,7 @@ class Tea
      * @param mixed|null          $default
      *
      * @return mixed|null
+     * @throws GuzzleException
      */
     public static function getHeader($uri, $key, $default = null)
     {

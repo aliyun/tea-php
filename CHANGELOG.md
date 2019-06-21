@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.3 - 2019-05-2
+- Improved `Request`.
+
 ## 1.0.2 - 2019-05-2
 - Added getHeader/getHeaders.
 
