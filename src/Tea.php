@@ -5,6 +5,7 @@ namespace HttpX\Tea;
 use GuzzleHttp\Client;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Request;
 use HttpX\Tea\Exception\TeaError;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -43,17 +44,6 @@ class Tea
     }
 
     /**
-     * @param Request $request
-     * @param array   $config
-     *
-     * @return PromiseInterface
-     */
-    public static function doRequestAsync(Request $request, array $config = [])
-    {
-        return self::doPsrRequestAsync($request->getPsrRequest(), $config);
-    }
-
-    /**
      * @param RequestInterface $request
      *
      * @param array            $config
@@ -79,6 +69,33 @@ class Tea
     }
 
     /**
+     * @return Client
+     */
+    public static function client()
+    {
+        $stack = HandlerStack::create();
+
+        $stack->push(Middleware::mapResponse(static function(ResponseInterface $response) {
+            return new Response($response);
+        }));
+
+        self::$config['handler'] = $stack;
+
+        return new Client(self::$config);
+    }
+
+    /**
+     * @param Request $request
+     * @param array   $config
+     *
+     * @return PromiseInterface
+     */
+    public static function doRequestAsync(Request $request, array $config = [])
+    {
+        return self::doPsrRequestAsync($request->getPsrRequest(), $config);
+    }
+
+    /**
      * @param RequestInterface $request
      *
      * @param array            $config
@@ -96,19 +113,40 @@ class Tea
     }
 
     /**
-     * @return Client
+     * @param string     $uri
+     * @param string     $key
+     * @param mixed|null $default
+     *
+     * @return mixed|null
      */
-    public static function client()
+    public static function getHeader($uri, $key, $default = null)
     {
-        $stack = HandlerStack::create();
+        $headers = self::getHeaders($uri);
 
-        $stack->push(Middleware::mapResponse(static function (ResponseInterface $response) {
-            return new Response($response);
-        }));
+        return isset($headers[$key][0]) ? $headers[$key][0] : $default;
+    }
 
-        self::$config['handler'] = $stack;
+    /**
+     * @param string $uri
+     *
+     * @return mixed|null
+     */
+    public static function getHeaders($uri)
+    {
+        return self::request('HEAD', $uri)->getHeaders();
+    }
 
-        return new Client(self::$config);
+    /**
+     * @param string $method
+     * @param string $uri
+     *
+     * @return Response
+     */
+    public static function request($method, $uri)
+    {
+        $request = new Request($method, $uri);
+
+        return self::doPsrRequest($request);
     }
 
     /**

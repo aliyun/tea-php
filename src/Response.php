@@ -27,16 +27,6 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     protected $dot;
 
     /**
-     * @param string $expression
-     *
-     * @return mixed|null
-     */
-    public function search($expression)
-    {
-        return JmesPath::search($expression, $this->dot->all());
-    }
-
-    /**
      * Response constructor.
      *
      * @param ResponseInterface $response
@@ -56,6 +46,24 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
         } else {
             $this->dot = new Dot();
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return \GuzzleHttp\json_decode((string)$this->getBody(), true);
+    }
+
+    /**
+     * @param string $expression
+     *
+     * @return mixed|null
+     */
+    public function search($expression)
+    {
+        return JmesPath::search($expression, $this->dot->all());
     }
 
     /**
@@ -237,14 +245,6 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     public function toJson($key = null, $options = 0)
     {
         return $this->dot->toJson($key, $options);
-    }
-
-    /**
-     * @return array
-     */
-    public function toArray()
-    {
-        return \GuzzleHttp\json_decode((string)$this->getBody(), true);
     }
 
     /**
