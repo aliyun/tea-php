@@ -34,4 +34,12 @@ abstract class Parameter
 
         return $array;
     }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->getRealParameters();
+    }
 }
