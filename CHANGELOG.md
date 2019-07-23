@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.5 - 2019-07-23
+- Supported default protocol.
+
 ## 1.0.4 - 2019-07-22
 - Added `toArray()`.
 

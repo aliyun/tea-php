@@ -15,7 +15,7 @@ class Request
     /**
      * @var string
      */
-    public $protocol;
+    public $protocol = 'https';
 
     /**
      * @var string
