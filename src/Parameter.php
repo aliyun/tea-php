@@ -28,6 +28,7 @@ abstract class Parameter
         foreach ($properties as $property) {
             $docComment  = $property->getDocComment();
             $key         = (string)Stringy::create($docComment)->between('@real ', "\n");
+            $key         = trim($key);
             $value       = $property->getValue($this);
             $array[$key] = $value;
         }
