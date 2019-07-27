@@ -19,6 +19,10 @@ class RequestTest extends TestCase
         $request->method          = 'get';
         $request->protocol        = 'https';
         $request->headers['host'] = 'www.alibaba.com';
+        $request->query           = [
+            'a' => 'a',
+            'b' => 'b',
+        ];
         $result                   = Tea::doRequest($request);
 
         self::assertEquals(200, $result->getStatusCode());

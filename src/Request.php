@@ -2,6 +2,7 @@
 
 namespace HttpX\Tea;
 
+use GuzzleHttp\Psr7\Uri;
 use InvalidArgumentException;
 use GuzzleHttp\Psr7\Request as PsrRequest;
 
@@ -43,6 +44,11 @@ class Request
     public $body;
 
     /**
+     * @var int
+     */
+    public $port;
+
+    /**
      * @return PsrRequest
      */
     public function getPsrRequest()
@@ -63,24 +69,26 @@ class Request
             throw new InvalidArgumentException('Method can not be empty.');
         }
 
-        $uri     = $this->protocol . '://' . $this->headers['host'] . $this->pathname;
-        $request = new PsrRequest(
+        if (!is_array($this->query)) {
+            throw new InvalidArgumentException('Query must be array.');
+        }
+
+        $uri = new Uri();
+        if ($this->query) {
+            $uri = $uri->withQuery(http_build_query($this->query));
+        }
+        if ($this->port) {
+            $uri = $uri->withPort($this->port);
+        }
+        $uri = $uri->withScheme($this->protocol);
+        $uri = $uri->withPath($this->pathname);
+        $uri = $uri->withHost($this->headers['host']);
+
+        return new PsrRequest(
             strtoupper($this->method),
             $uri,
             $this->headers,
             $this->body
         );
-
-        if (!is_array($this->query)) {
-            throw new InvalidArgumentException('Query must be array.');
-        }
-
-        if ($this->query) {
-            $request = $request->withUri(
-                $request->getUri()->withQuery(http_build_query($this->query))
-            );
-        }
-
-        return $request;
     }
 }

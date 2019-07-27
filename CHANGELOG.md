@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.7 - 2019-07-27
+- Improved request.
+
 ## 1.0.6 - 2019-07-23
 - Trim key for parameter.
 
