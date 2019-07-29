@@ -7,6 +7,7 @@ use Countable;
 use ArrayAccess;
 use IteratorAggregate;
 use JmesPath\Env as JmesPath;
+use GuzzleHttp\TransferStats;
 use Songshenzong\Support\Strings;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Psr7\Response as PsrResponse;
@@ -25,6 +26,11 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
      * @var Dot
      */
     protected $dot;
+
+    /**
+     * @var TransferStats
+     */
+    public static $info;
 
     /**
      * Response constructor.

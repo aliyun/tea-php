@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.8 - 2019-07-29
+- Supported `TransferStats`.
+
 ## 1.0.7 - 2019-07-27
 - Improved request.
 

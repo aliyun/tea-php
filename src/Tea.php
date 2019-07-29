@@ -5,6 +5,7 @@ namespace HttpX\Tea;
 use GuzzleHttp\Client;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\TransferStats;
 use Songshenzong\Support\Arrays;
 use HttpX\Tea\Exception\TeaError;
 use Psr\Http\Message\UriInterface;
@@ -77,11 +78,14 @@ class Tea
     {
         $stack = HandlerStack::create();
 
-        $stack->push(Middleware::mapResponse(static function (ResponseInterface $response) {
+        $stack->push(Middleware::mapResponse(static function(ResponseInterface $response) {
             return new Response($response);
         }));
 
-        self::$config['handler'] = $stack;
+        self::$config['handler']  = $stack;
+        self::$config['on_stats'] = function(TransferStats $stats) {
+            Response::$info = $stats->getHandlerStats();
+        };
 
         $new_config = Arrays::merge([self::$config, $config]);
 
