@@ -76,16 +76,23 @@ class Tea
      */
     public static function client(array $config = [])
     {
-        $stack = HandlerStack::create();
+        if (isset(self::$config['handler'])) {
+            $stack = self::$config['handler'];
+        } else {
+            $stack = HandlerStack::create();
+        }
 
-        $stack->push(Middleware::mapResponse(static function(ResponseInterface $response) {
+        $stack->push(Middleware::mapResponse(static function (ResponseInterface $response) {
             return new Response($response);
         }));
 
-        self::$config['handler']  = $stack;
-        self::$config['on_stats'] = function(TransferStats $stats) {
-            Response::$info = $stats->getHandlerStats();
-        };
+        self::$config['handler'] = $stack;
+
+        if (!isset(self::$config['on_stats'])) {
+            self::$config['on_stats'] = function (TransferStats $stats) {
+                Response::$info = $stats->getHandlerStats();
+            };
+        }
 
         $new_config = Arrays::merge([self::$config, $config]);
 
