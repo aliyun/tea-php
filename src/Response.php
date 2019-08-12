@@ -55,6 +55,14 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     }
 
     /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string)$this->getBody();
+    }
+
+    /**
      * @return array
      */
     public function toArray()
