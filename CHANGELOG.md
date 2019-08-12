@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.10 - 2019-08-12
+- Added `__toString` for `Response`.
+
 ## 1.0.9 - 2019-08-01
 - Updated `Middleware`.
 
