@@ -2,7 +2,6 @@
 
 namespace HttpX\Tea;
 
-use GuzzleHttp\Psr7\Uri;
 use InvalidArgumentException;
 use GuzzleHttp\Psr7\Request as PsrRequest;
 
@@ -11,17 +10,12 @@ use GuzzleHttp\Psr7\Request as PsrRequest;
  *
  * @package Tea
  */
-class Request
+class Request extends PsrRequest
 {
     /**
      * @var string
      */
     public $protocol = 'https';
-
-    /**
-     * @var string
-     */
-    public $method;
 
     /**
      * @var string
@@ -49,46 +43,60 @@ class Request
     public $port;
 
     /**
+     * These fields are compatible if you define other fields.
+     * Mainly for compatibility situations where the code generator cannot generate set properties.
+     *
      * @return PsrRequest
      */
     public function getPsrRequest()
     {
-        if (!$this->protocol) {
-            throw new InvalidArgumentException('Protocol can not be empty.');
-        }
+        $this->assertQuery($this->query);
 
-        if (!isset($this->headers['host'])) {
-            throw new InvalidArgumentException('Host can not be empty.');
-        }
+        $request = clone $this;
 
-        if (!$this->pathname) {
-            throw new InvalidArgumentException('Pathname can not be empty.');
-        }
-
-        if (!$this->method) {
-            throw new InvalidArgumentException('Method can not be empty.');
-        }
-
-        if (!is_array($this->query)) {
-            throw new InvalidArgumentException('Query must be array.');
-        }
-
-        $uri = new Uri();
+        $uri = $request->getUri();
         if ($this->query) {
             $uri = $uri->withQuery(http_build_query($this->query));
         }
+
         if ($this->port) {
             $uri = $uri->withPort($this->port);
         }
-        $uri = $uri->withScheme($this->protocol);
-        $uri = $uri->withPath($this->pathname);
-        $uri = $uri->withHost($this->headers['host']);
 
-        return new PsrRequest(
-            strtoupper($this->method),
-            $uri,
-            $this->headers,
-            $this->body
-        );
+        if ($this->protocol) {
+            $uri = $uri->withScheme($this->protocol);
+        }
+
+        if ($this->pathname) {
+            $uri = $uri->withPath($this->pathname);
+        }
+
+        if (isset($this->headers['host'])) {
+            $uri = $uri->withHost($this->headers['host']);
+        }
+
+        $request = $request->withUri($uri);
+
+        if ($this->body !== '' && $this->body !== null) {
+            $request = $request->withBody(\GuzzleHttp\Psr7\stream_for($this->body));
+        }
+
+        if ($this->headers) {
+            foreach ($this->headers as $key => $value) {
+                $request = $request->withHeader($key, $value);
+            }
+        }
+
+        return $request;
+    }
+
+    /**
+     * @param array $query
+     */
+    private function assertQuery($query)
+    {
+        if (!is_array($query)) {
+            throw new InvalidArgumentException('Query must be array.');
+        }
     }
 }

@@ -14,8 +14,7 @@ class RequestTest extends TestCase
 {
     public static function testGetPsrRequest()
     {
-        $request                  = new Request();
-        $request->method          = 'get';
+        $request                  = new Request('get', '');
         $request->protocol        = 'https';
         $request->headers['host'] = 'www.alibaba.com';
         $psrRequest               = $request->getPsrRequest();

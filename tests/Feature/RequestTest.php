@@ -15,16 +15,14 @@ class RequestTest extends TestCase
 {
     public function testRequest()
     {
-        $request                  = new Request();
-        $request->method          = 'get';
+        $request                  = new Request('get', '');
         $request->protocol        = 'https';
-        $request->headers['host'] = 'www.alibaba.com';
+        $request->headers['host'] = 'www.baidu.com';
         $request->query           = [
             'a' => 'a',
             'b' => 'b',
         ];
-        $result                   = Tea::doRequest($request);
-
+        $result                   = Tea::send($request);
         self::assertEquals(200, $result->getStatusCode());
     }
 }
