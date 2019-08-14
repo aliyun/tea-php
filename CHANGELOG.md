@@ -1,7 +1,7 @@
 # CHANGELOG
 
 ## 2.0.0 - 2019-08-14
-- Design `Request` as a standard `RsrRequest`.
+- Design `Request` as a standard `PsrRequest`.
 
 ## 1.0.10 - 2019-08-12
 - Added `__toString` for `Response`.
