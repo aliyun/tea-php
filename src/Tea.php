@@ -35,24 +35,17 @@ class Tea
     }
 
     /**
-     * @param Request $request
-     * @param array   $config
-     *
-     * @return Response
-     */
-    public static function doRequest(Request $request, array $config = [])
-    {
-        return self::doPsrRequest($request->getPsrRequest(), $config);
-    }
-
-    /**
      * @param RequestInterface $request
      * @param array            $config
      *
      * @return Response
      */
-    public static function doPsrRequest(RequestInterface $request, array $config = [])
+    public static function send(RequestInterface $request, array $config = [])
     {
+        if (method_exists($request, 'getPsrRequest')) {
+            $request = $request->getPsrRequest();
+        }
+
         $config['http_errors'] = false;
 
         try {
@@ -67,6 +60,26 @@ class Tea
                 $e
             );
         }
+    }
+
+    /**
+     * @param RequestInterface $request
+     * @param array            $config
+     *
+     * @return PromiseInterface
+     */
+    public static function sendAsync(RequestInterface $request, array $config = [])
+    {
+        if (method_exists($request, 'getPsrRequest')) {
+            $request = $request->getPsrRequest();
+        }
+
+        $config['http_errors'] = false;
+
+        return self::client()->sendAsync(
+            $request,
+            $config
+        );
     }
 
     /**
@@ -97,34 +110,6 @@ class Tea
         $new_config = Arrays::merge([self::$config, $config]);
 
         return new Client($new_config);
-    }
-
-    /**
-     * @param Request $request
-     * @param array   $config
-     *
-     * @return PromiseInterface
-     */
-    public static function doRequestAsync(Request $request, array $config = [])
-    {
-        return self::doPsrRequestAsync($request->getPsrRequest(), $config);
-    }
-
-    /**
-     * @param RequestInterface $request
-     *
-     * @param array            $config
-     *
-     * @return PromiseInterface
-     */
-    public static function doPsrRequestAsync(RequestInterface $request, array $config = [])
-    {
-        $config['http_errors'] = false;
-
-        return self::client()->sendAsync(
-            $request,
-            $config
-        );
     }
 
     /**
