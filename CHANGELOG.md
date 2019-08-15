@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 2.0.1 - 2019-08-15
+- Supported `IteratorAggregate`.
+
 ## 2.0.0 - 2019-08-14
 - Design `Request` as a standard `PsrRequest`.
 

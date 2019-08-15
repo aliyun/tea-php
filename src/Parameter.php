@@ -2,8 +2,11 @@
 
 namespace HttpX\Tea;
 
+use Traversable;
+use ArrayIterator;
 use Stringy\Stringy;
 use ReflectionObject;
+use IteratorAggregate;
 use ReflectionProperty;
 
 /**
@@ -11,8 +14,16 @@ use ReflectionProperty;
  *
  * @package HttpX\Tea
  */
-abstract class Parameter
+abstract class Parameter implements IteratorAggregate
 {
+    /**
+     * @return ArrayIterator|Traversable
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->toArray());
+    }
+
     /**
      * @return array
      */
