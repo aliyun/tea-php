@@ -126,6 +126,20 @@ class Tea
     }
 
     /**
+     * @param string $method
+     * @param string $uri
+     * @param array  $options
+     *
+     * @return string
+     * @throws GuzzleException
+     */
+    public static function string($method, $uri, $options = [])
+    {
+        return (string)self::client()->request($method, $uri, $options)
+                           ->getBody();
+    }
+
+    /**
      * @param string              $method
      * @param string|UriInterface $uri
      * @param array               $options
