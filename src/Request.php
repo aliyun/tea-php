@@ -4,7 +4,6 @@ namespace HttpX\Tea;
 
 use InvalidArgumentException;
 use GuzzleHttp\Psr7\Request as PsrRequest;
-use function GuzzleHttp\Psr7\stream_for;
 
 /**
  * Class Request
@@ -87,7 +86,7 @@ class Request extends PsrRequest
         $request = $request->withUri($uri);
 
         if ($this->body !== '' && $this->body !== null) {
-            $request = $request->withBody(stream_for($this->body));
+            $request = $request->withBody(\GuzzleHttp\Psr7\stream_for($this->body));
         }
 
         if ($this->headers) {
