@@ -42,6 +42,14 @@ class Request extends PsrRequest
      */
     public $port;
 
+    public $method;
+
+    public function __construct($method = "GET", $uri = "", array $headers = [], $body = null, $version = '1.1')
+    {
+        parent::__construct($method, $uri, $headers, $body, $version);
+        $this->method = $method;
+    }
+
     /**
      * These fields are compatible if you define other fields.
      * Mainly for compatibility situations where the code generator cannot generate set properties.

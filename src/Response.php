@@ -19,7 +19,9 @@ use GuzzleHttp\Psr7\Response as PsrResponse;
  */
 class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Countable
 {
-
+    public $headers = [];
+    public $statusCode;
+    public $statusMessage;
     /**
      * Instance of the Dot.
      *

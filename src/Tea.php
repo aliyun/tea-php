@@ -38,7 +38,7 @@ class Tea
      * @param RequestInterface $request
      * @param array            $config
      *
-     * @return Response
+     * @return ResponseInterface
      */
     public static function send(RequestInterface $request, array $config = [])
     {
@@ -136,7 +136,7 @@ class Tea
     public static function string($method, $uri, $options = [])
     {
         return (string)self::client()->request($method, $uri, $options)
-                           ->getBody();
+            ->getBody();
     }
 
     /**
@@ -179,39 +179,54 @@ class Tea
     }
 
     /**
-     * @param array $retry
+     * @param array $runtime
      * @param int   $retryTimes
      * @param float $now
      *
      * @return bool
      */
-    public static function allowRetry(array $retry, $retryTimes, $now)
+    public static function allowRetry(array $runtime, $retryTimes, $now)
     {
-        $retryable   = $retry['retryable'];
-        $policy      = $retry['policy'];
-        $maxAttempts = $retry['max-attempts'];
-
-        if ($retryable !== true) {
+        if (empty($runtime) || !isset($runtime['max-attempts'])) {
             return false;
         }
-
-        if ($maxAttempts <= $retryTimes) {
-            return false;
-        }
-
-        return true;
+        $maxAttempts = $runtime['max-attempts'];
+        $retry       = empty($maxAttempts) ? 0 : intval($maxAttempts);
+        return $retry >= $retryTimes;
     }
 
     /**
-     * @param array $backoff
+     * @param array $runtime
      * @param int   $retryTimes
      *
      * @return int
      */
-    public static function getBackoffTime(array $backoff, $retryTimes)
+    public static function getBackoffTime(array $runtime, $retryTimes)
     {
-        list($policy, $period) = $backoff;
+        $backOffTime = 0;
+        $policy      = isset($runtime["policy"]) ? $runtime["policy"] : "";
 
-        return 1 * 1000;
+        if (empty($policy) || $policy == "no") {
+            return $backOffTime;
+        }
+
+        $period = isset($runtime["period"]) ? $runtime["period"] : "";
+        if (null !== $period && "" !== $period) {
+            $backOffTime = intval($period);
+            if ($backOffTime <= 0) {
+                return $retryTimes;
+            }
+        }
+        return $backOffTime;
+    }
+
+    public static function sleep($time)
+    {
+        sleep($time);
+    }
+
+    public static function isRetryable($e)
+    {
+        return $e instanceof TeaError;
     }
 }
