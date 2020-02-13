@@ -1,5 +1,5 @@
 {
-    "name": "alibabacloud/tea",
+    "name": "httpx/tea",
     "homepage": "https://www.alibabacloud.com/",
     "description": "Client of Tea for PHP",
     "keywords": [
