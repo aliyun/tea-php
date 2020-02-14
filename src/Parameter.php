@@ -2,12 +2,11 @@
 
 namespace HttpX\Tea;
 
-use Traversable;
 use ArrayIterator;
-use Stringy\Stringy;
-use ReflectionObject;
 use IteratorAggregate;
-use ReflectionProperty;
+use ReflectionObject;
+use Stringy\Stringy;
+use Traversable;
 
 /**
  * Class Parameter
@@ -33,9 +32,6 @@ abstract class Parameter implements IteratorAggregate
         $obj        = new ReflectionObject($this);
         $properties = $obj->getProperties();
 
-        /**
-         * @var $property ReflectionProperty
-         */
         foreach ($properties as $property) {
             $docComment  = $property->getDocComment();
             $key         = (string)Stringy::create($docComment)->between('@real ', "\n");

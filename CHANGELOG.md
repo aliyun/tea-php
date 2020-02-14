@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 2.0.3 - 2020-02-14
+- Improved Exception.
+
 ## 2.0.2 - 2019-09-11
 - Supported `String`.
 
