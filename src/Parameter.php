@@ -1,6 +1,6 @@
 <?php
 
-namespace HttpX\Tea;
+namespace AlibabaCloud\Tea;
 
 use ArrayIterator;
 use IteratorAggregate;
@@ -11,7 +11,7 @@ use Traversable;
 /**
  * Class Parameter
  *
- * @package HttpX\Tea
+ * @package AlibabaCloud\Tea
  */
 abstract class Parameter implements IteratorAggregate
 {

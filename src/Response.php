@@ -1,6 +1,6 @@
 <?php
 
-namespace HttpX\Tea;
+namespace AlibabaCloud\Tea;
 
 use Adbar\Dot;
 use Countable;

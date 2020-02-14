@@ -1,7 +1,7 @@
 
 ## Installation
 ```
-composer require httpx/tea --optimize-autoloader
+composer require alibabacloud/tea --optimize-autoloader
 ```
 > Some users may not be able to install due to network problems, you can try to switch the Composer mirror.
 

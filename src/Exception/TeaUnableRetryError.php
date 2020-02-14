@@ -1,13 +1,13 @@
 <?php
 
-namespace HttpX\Tea\Exception;
+namespace AlibabaCloud\Tea\Exception;
 
 use RuntimeException;
 
 /**
  * Class TeaUnableRetryError
  *
- * @package HttpX\Tea\Exception
+ * @package AlibabaCloud\Tea\Exception
  */
 class TeaUnableRetryError extends RuntimeException
 {

@@ -1,16 +1,16 @@
 <?php
 
-namespace HttpX\Tea\Tests\Feature;
+namespace AlibabaCloud\Tea\Tests\Feature;
 
 use GuzzleHttp\Exception\GuzzleException;
-use HttpX\Tea\Request;
-use HttpX\Tea\Tea;
+use AlibabaCloud\Tea\Request;
+use AlibabaCloud\Tea\Tea;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class RequestTest
  *
- * @package HttpX\Tea\Tests\Feature
+ * @package AlibabaCloud\Tea\Tests\Feature
  */
 class RequestTest extends TestCase
 {

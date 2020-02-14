@@ -1,14 +1,14 @@
 <?php
 
-namespace HttpX\Tea\Tests\Unit;
+namespace AlibabaCloud\Tea\Tests\Unit;
 
-use HttpX\Tea\Request;
+use AlibabaCloud\Tea\Request;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class RequestTest
  *
- * @package HttpX\Tea\Tests\Unit
+ * @package AlibabaCloud\Tea\Tests\Unit
  */
 class RequestTest extends TestCase
 {

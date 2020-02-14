@@ -1,13 +1,13 @@
 <?php
 
-namespace HttpX\Tea\Exception;
+namespace AlibabaCloud\Tea\Exception;
 
 use RuntimeException;
 
 /**
  * Class TeaError
  *
- * @package HttpX\Tea\Exception
+ * @package AlibabaCloud\Tea\Exception
  */
 class TeaError extends RuntimeException
 {
