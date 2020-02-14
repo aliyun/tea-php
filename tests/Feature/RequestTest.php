@@ -2,10 +2,10 @@
 
 namespace HttpX\Tea\Tests\Feature;
 
-use HttpX\Tea\Tea;
-use HttpX\Tea\Request;
-use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Exception\GuzzleException;
+use HttpX\Tea\Request;
+use HttpX\Tea\Tea;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class RequestTest
@@ -18,7 +18,7 @@ class RequestTest extends TestCase
     {
         $request                  = new Request('get', '');
         $request->protocol        = 'https';
-        $request->headers['host'] = 'www.baidu.com';
+        $request->headers['host'] = 'www.alibabacloud.com';
         $request->query           = [
             'a' => 'a',
             'b' => 'b',
@@ -32,7 +32,7 @@ class RequestTest extends TestCase
      */
     public function testString()
     {
-        $string = Tea::string('get', 'http://www.baidu.com/');
-        self::assertNotFalse(strpos($string, '<link rel="dns-prefetch" href="//s1.bdstatic.com"/>'));
+        $string = Tea::string('get', 'http://www.alibabacloud.com/');
+        self::assertNotFalse(strpos($string, '<link rel="dns-prefetch" href="//g.alicdn.com">'));
     }
 }
