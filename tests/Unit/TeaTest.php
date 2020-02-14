@@ -1,9 +1,9 @@
 <?php
 
-namespace HttpX\Tea\Tests\Unit;
+namespace AlibabaCloud\Tea\Tests\Unit;
 
-use HttpX\Tea\Exception\TeaError;
-use HttpX\Tea\Tea;
+use AlibabaCloud\Tea\Exception\TeaError;
+use AlibabaCloud\Tea\Tea;
 use PHPUnit\Framework\TestCase;
 
 class TeaTest extends TestCase

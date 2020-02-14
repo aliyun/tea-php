@@ -1,6 +1,6 @@
 <?php
 
-namespace HttpX\Tea;
+namespace AlibabaCloud\Tea;
 
 class Model
 {

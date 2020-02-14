@@ -1,5 +1,5 @@
 {
-    "name": "httpx/tea",
+    "name": "alibabacloud/tea",
     "homepage": "https://www.alibabacloud.com/",
     "description": "Client of Tea for PHP",
     "keywords": [
@@ -46,12 +46,12 @@
     },
     "autoload": {
         "psr-4": {
-            "HttpX\\Tea\\": "src"
+            "AlibabaCloud\\Tea\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "HttpX\\Tea\\Tests\\": "tests"
+            "AlibabaCloud\\Tea\\Tests\\": "tests"
         }
     },
     "config": {

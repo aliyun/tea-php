@@ -1,13 +1,13 @@
 <?php
 
-namespace HttpX\Tea;
+namespace AlibabaCloud\Tea;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\TransferStats;
 use Songshenzong\Support\Arrays;
-use HttpX\Tea\Exception\TeaError;
+use AlibabaCloud\Tea\Exception\TeaError;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -17,7 +17,7 @@ use GuzzleHttp\Exception\GuzzleException;
 /**
  * Class Tea
  *
- * @package HttpX\Tea
+ * @package AlibabaCloud\Tea
  */
 class Tea
 {

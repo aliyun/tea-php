@@ -1,6 +1,6 @@
 <?php
 
-namespace HttpX\Tea;
+namespace AlibabaCloud\Tea;
 
 use InvalidArgumentException;
 use GuzzleHttp\Psr7\Request as PsrRequest;

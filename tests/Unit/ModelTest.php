@@ -1,8 +1,8 @@
 <?php
 
-namespace HttpX\Tea\Tests\Unit;
+namespace AlibabaCloud\Tea\Tests\Unit;
 
-use HttpX\Tea\Model;
+use AlibabaCloud\Tea\Model;
 use PHPUnit\Framework\TestCase;
 
 class ModelTest extends TestCase
