@@ -38,7 +38,7 @@ class Tea
      * @param RequestInterface $request
      * @param array            $config
      *
-     * @return ResponseInterface
+     * @return Response
      */
     public static function send(RequestInterface $request, array $config = [])
     {
@@ -48,18 +48,11 @@ class Tea
 
         $config['http_errors'] = false;
 
-        try {
-            return self::client()->send(
-                $request,
-                $config
-            );
-        } catch (GuzzleException $e) {
-            throw new TeaError(
-                $e->getMessage(),
-                $e->getCode(),
-                $e
-            );
-        }
+        $res = self::client()->send(
+            $request,
+            $config
+        );
+        return new Response($res);
     }
 
     /**
@@ -117,8 +110,7 @@ class Tea
      * @param string|UriInterface $uri
      * @param array               $options
      *
-     * @return Response
-     * @throws GuzzleException
+     * @return ResponseInterface
      */
     public static function request($method, $uri, $options = [])
     {
@@ -131,7 +123,6 @@ class Tea
      * @param array  $options
      *
      * @return string
-     * @throws GuzzleException
      */
     public static function string($method, $uri, $options = [])
     {
@@ -187,10 +178,11 @@ class Tea
      */
     public static function allowRetry(array $runtime, $retryTimes, $now)
     {
-        if (empty($runtime) || !isset($runtime['max-attempts'])) {
+        unset($now);
+        if (empty($runtime) || !isset($runtime['maxAttempts'])) {
             return false;
         }
-        $maxAttempts = $runtime['max-attempts'];
+        $maxAttempts = $runtime['maxAttempts'];
         $retry       = empty($maxAttempts) ? 0 : intval($maxAttempts);
         return $retry >= $retryTimes;
     }

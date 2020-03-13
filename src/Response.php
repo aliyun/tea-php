@@ -8,6 +8,7 @@ use ArrayAccess;
 use IteratorAggregate;
 use JmesPath\Env as JmesPath;
 use GuzzleHttp\TransferStats;
+use Psr\Http\Message\StreamInterface;
 use Songshenzong\Support\Strings;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Psr7\Response as PsrResponse;
@@ -21,7 +22,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
 {
     public $headers = [];
     public $statusCode;
-    public $statusMessage;
+    public $statusMessage = "";
     /**
      * Instance of the Dot.
      *
@@ -33,6 +34,11 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
      * @var TransferStats
      */
     public static $info;
+
+    /**
+     * @var StreamInterface
+     */
+    public $body;
 
     /**
      * Response constructor.
@@ -48,6 +54,9 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
             $response->getProtocolVersion(),
             $response->getReasonPhrase()
         );
+        $this->headers    = $response->getHeaders();
+        $this->body       = $this->getBody();
+        $this->statusCode = $response->getStatusCode();
 
         if (Strings::isJson((string)$this->getBody())) {
             $this->dot = new Dot($this->toArray());
