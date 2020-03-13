@@ -2,6 +2,7 @@
 
 namespace AlibabaCloud\Tea\Exception;
 
+use AlibabaCloud\Tea\Request;
 use RuntimeException;
 
 /**
@@ -11,15 +12,21 @@ use RuntimeException;
  */
 class TeaUnableRetryError extends RuntimeException
 {
+    private $lastRequest;
+
     /**
      * TeaUnableRetryError constructor.
      *
-     * @param string          $message
-     * @param int             $code
-     * @param \Throwable|null $previous
+     * @param Request         $lastRequest
      */
-    public function __construct($message = '', $code = 0, $previous = null)
+    public function __construct($lastRequest)
     {
-        parent::__construct($message, $code, $previous);
+        parent::__construct('TeaUnableRetryError', 0, null);
+        $this->lastRequest = $lastRequest;
+    }
+
+    public function getLastRequest()
+    {
+        return $this->lastRequest;
     }
 }
