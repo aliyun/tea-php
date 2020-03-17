@@ -84,6 +84,7 @@ class Request extends PsrRequest
         }
 
         $request = $request->withUri($uri);
+        $request = $request->withMethod($this->method);
 
         if ($this->body !== '' && $this->body !== null) {
             $request = $request->withBody(\GuzzleHttp\Psr7\stream_for($this->body));

@@ -2,7 +2,6 @@
 
 namespace AlibabaCloud\Tea\Tests\Feature;
 
-use GuzzleHttp\Exception\GuzzleException;
 use AlibabaCloud\Tea\Request;
 use AlibabaCloud\Tea\Tea;
 use PHPUnit\Framework\TestCase;
@@ -27,12 +26,23 @@ class RequestTest extends TestCase
         self::assertEquals(200, $result->getStatusCode());
     }
 
-    /**
-     * @throws GuzzleException
-     */
     public function testString()
     {
         $string = Tea::string('get', 'http://www.alibabacloud.com/');
         self::assertNotFalse(strpos($string, '<link rel="dns-prefetch" href="//g.alicdn.com">'));
+    }
+
+    public function testRequestWithBody()
+    {
+        $request                  = new Request();
+        $request->method          = 'POST';
+        $request->protocol        = 'https';
+        $request->headers['host'] = "httpbin.org";
+        $request->body            = "this is body content";
+        $request->pathname        = '/post';
+
+        $res  = Tea::send($request);
+        $data = json_decode((string)$res->getBody(), true);
+        $this->assertEquals("this is body content", $data["data"]);
     }
 }
