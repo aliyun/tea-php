@@ -57,7 +57,9 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
         $this->headers    = $response->getHeaders();
         $this->body       = $response->getBody();
         $this->statusCode = $response->getStatusCode();
-        $this->body->seek(0);
+        if ($this->body->isSeekable()) {
+            $this->body->seek(0);
+        }
 
         if (Strings::isJson((string)$this->getBody())) {
             $this->dot = new Dot($this->toArray());
