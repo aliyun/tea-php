@@ -7,6 +7,15 @@ class Model
     protected $_name     = [];
     protected $_required = [];
 
+    public function __construct($config = [])
+    {
+        if (!empty($config)) {
+            foreach ($config as $k => $v) {
+                $this->{$k} = $v;
+            }
+        }
+    }
+
     public function toMap()
     {
         return get_object_vars($this);

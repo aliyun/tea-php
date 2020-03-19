@@ -23,6 +23,22 @@ class ModelTest extends TestCase
         $this->expectExceptionMessage("c is required.");
         $model->validate();
     }
+
+    public function testInit()
+    {
+        $config = new Config([
+            "accessKeyId"     => "fakeAccessKeyId",
+            "accessKeySecret" => "fakeAccessKeySecret"
+        ]);
+        $this->assertEquals("fakeAccessKeyId", $config->accessKeyId);
+        $this->assertEquals("fakeAccessKeySecret", $config->accessKeySecret);
+    }
+}
+
+class Config extends Model
+{
+    public $accessKeyId;
+    public $accessKeySecret;
 }
 
 class ModelMock extends Model
@@ -35,5 +51,6 @@ class ModelMock extends Model
     {
         $this->_name["a"]     = "A";
         $this->_required["c"] = true;
+        parent::__construct();
     }
 }
