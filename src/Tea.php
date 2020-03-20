@@ -7,7 +7,6 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\TransferStats;
 use Songshenzong\Support\Arrays;
-use AlibabaCloud\Tea\Exception\TeaError;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -217,8 +216,25 @@ class Tea
         sleep($time);
     }
 
-    public static function isRetryable($e)
+    public static function isRetryable($retry, $retryTimes)
     {
-        return $e instanceof TeaError;
+        $max = isset($retry["maxAttempts"]) ? intval($retry["maxAttempts"]) : 3;
+        return $retryTimes <= $max;
+    }
+
+    public static function merge(...$item)
+    {
+        $tmp = [];
+        $n   = 0;
+        foreach ($item as $i) {
+            if (is_object($i)) {
+                $i = json_decode(json_encode($i), true);
+            }
+            if (!is_array($i)) {
+                throw new \InvalidArgumentException($i);
+            }
+            $tmp[$n++] = $i;
+        }
+        return call_user_func_array('array_merge', $tmp);
     }
 }
