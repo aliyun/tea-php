@@ -33,6 +33,19 @@ class ModelTest extends TestCase
         $this->assertEquals("fakeAccessKeyId", $config->accessKeyId);
         $this->assertEquals("fakeAccessKeySecret", $config->accessKeySecret);
     }
+
+    public function testToModel()
+    {
+        $model = Model::toModel([
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+            'd' => 4
+        ], new ModelMock());
+        $this->assertEquals(1, $model->a);
+        $this->assertEquals(2, $model->b);
+        $this->assertEquals(3, $model->c);
+    }
 }
 
 class Config extends Model
