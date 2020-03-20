@@ -30,4 +30,12 @@ class Model
             }
         }
     }
+
+    public static function toModel($map, $model)
+    {
+        foreach ($map as $key => $value) {
+            $model->{$key} = $value;
+        }
+        return $model;
+    }
 }
