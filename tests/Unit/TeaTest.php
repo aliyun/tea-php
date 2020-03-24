@@ -52,7 +52,8 @@ class TeaTest extends TestCase
             "data"    => [],
             "message" => "error message"
         ]);
-        self::assertTrue(Tea::isRetryable($exception));
+        $retry     = ["maxAttempts" => 3];
+        self::assertTrue(Tea::isRetryable($retry, 1));
 
         $errorInfo = $exception->getErrorInfo();
         self::assertEquals("error message", $errorInfo["message"]);

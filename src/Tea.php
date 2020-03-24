@@ -222,13 +222,22 @@ class Tea
         return $retryTimes <= $max;
     }
 
+    /**
+     * @param mixed|Model[] ...$item
+     *
+     * @return mixed
+     */
     public static function merge(...$item)
     {
         $tmp = [];
         $n   = 0;
         foreach ($item as $i) {
             if (is_object($i)) {
-                $i = json_decode(json_encode($i), true);
+                if ($i instanceof Model) {
+                    $i = $i->toMap();
+                } else {
+                    $i = json_decode(json_encode($i), true);
+                }
             }
             if (!is_array($i)) {
                 throw new \InvalidArgumentException($i);

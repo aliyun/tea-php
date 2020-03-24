@@ -12,7 +12,7 @@ class ModelTest extends TestCase
         $model = new ModelMock();
         $arr   = $model->toMap();
 
-        self::assertEquals("a", $arr["a"]);
+        self::assertEquals("a", $arr["A"]);
         self::assertEquals("b", $arr["b"]);
     }
 
@@ -37,7 +37,7 @@ class ModelTest extends TestCase
     public function testToModel()
     {
         $model = Model::toModel([
-            'a' => 1,
+            'A' => 1,
             'b' => 2,
             'c' => 3,
             'd' => 4

@@ -16,9 +16,28 @@ class Model
         }
     }
 
+    public function getName($name = null)
+    {
+        if (null === $name) {
+            return $this->_name;
+        }
+        return isset($this->_name[$name]) ? $this->_name[$name] : $name;
+    }
+
     public function toMap()
     {
-        return get_object_vars($this);
+        $map = get_object_vars($this);
+        foreach ($map as $k => $m) {
+            if (0 === strpos($k, "_")) {
+                unset($map[$k]);
+            }
+        }
+        $res = [];
+        foreach ($map as $k => $v) {
+            $name       = isset($this->_name[$k]) ? $this->_name[$k] : $k;
+            $res[$name] = $v;
+        }
+        return $res;
     }
 
     public function validate()
@@ -31,10 +50,19 @@ class Model
         }
     }
 
+    /**
+     * @param array $map
+     * @param Model $model
+     *
+     * @return mixed
+     */
     public static function toModel($map, $model)
     {
+        $names = $model->getName();
+        $names = array_flip($names);
         foreach ($map as $key => $value) {
-            $model->{$key} = $value;
+            $name           = isset($names[$key]) ? $names[$key] : $key;
+            $model->{$name} = $value;
         }
         return $model;
     }
