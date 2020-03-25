@@ -4,6 +4,7 @@ namespace AlibabaCloud\Tea;
 
 use InvalidArgumentException;
 use GuzzleHttp\Psr7\Request as PsrRequest;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Class Request
@@ -87,7 +88,11 @@ class Request extends PsrRequest
         $request = $request->withMethod($this->method);
 
         if ($this->body !== '' && $this->body !== null) {
-            $request = $request->withBody(\GuzzleHttp\Psr7\stream_for($this->body));
+            if ($this->body instanceof StreamInterface) {
+                $request = $request->withBody($this->body);
+            } else {
+                $request = $request->withBody(\GuzzleHttp\Psr7\stream_for($this->body));
+            }
         }
 
         if ($this->headers) {
