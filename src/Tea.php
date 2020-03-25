@@ -34,12 +34,12 @@ class Tea
     }
 
     /**
-     * @param RequestInterface $request
+     * @param Request $request
      * @param array            $config
      *
      * @return Response
      */
-    public static function send(RequestInterface $request, array $config = [])
+    public static function send(Request $request, array $config = [])
     {
         if (method_exists($request, 'getPsrRequest')) {
             $request = $request->getPsrRequest();
