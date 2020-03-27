@@ -216,10 +216,15 @@ class Tea
         sleep($time);
     }
 
-    public static function isRetryable($retry, $retryTimes)
+    public static function isRetryable($retry, $retryTimes = 0)
     {
-        $max = isset($retry["maxAttempts"]) ? intval($retry["maxAttempts"]) : 3;
-        return $retryTimes <= $max;
+        if ($retry instanceof TeaError) {
+            return true;
+        } elseif (is_array($retry)) {
+            $max = isset($retry["maxAttempts"]) ? intval($retry["maxAttempts"]) : 3;
+            return $retryTimes <= $max;
+        }
+        return false;
     }
 
     /**
