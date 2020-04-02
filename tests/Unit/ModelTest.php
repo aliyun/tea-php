@@ -3,6 +3,7 @@
 namespace AlibabaCloud\Tea\Tests\Unit;
 
 use AlibabaCloud\Tea\Model;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class ModelTest extends TestCase
@@ -19,7 +20,7 @@ class ModelTest extends TestCase
     public function testValidate()
     {
         $model = new ModelMock();
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("c is required.");
         $model->validate();
     }
@@ -45,6 +46,42 @@ class ModelTest extends TestCase
         $this->assertEquals(1, $model->a);
         $this->assertEquals(2, $model->b);
         $this->assertEquals(3, $model->c);
+    }
+
+    public function testValidateRequired()
+    {
+        Model::validateRequired('FieldName', null, false);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('FieldName is required');
+        Model::validateRequired('FieldName', null, true);
+    }
+
+    public function testValidateMaxLength()
+    {
+        Model::validateMaxLength('FieldName', 'string', 10);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('FieldName is exceed max-length: 5');
+        Model::validateMaxLength('FieldName', 'string', 5);
+    }
+
+    public function testValidateMinLength()
+    {
+        Model::validateMinLength('FieldName', 'string', 5);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('FieldName is less than min-length: 10');
+        Model::validateMinLength('FieldName', 'string', 10);
+    }
+
+    public function testValidatePattern()
+    {
+        Model::validatePattern('FieldName', 'string123', "[a-z0-9A-Z]+");
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('FieldName is not match [a-z0-9A-Z]+');
+        Model::validatePattern('FieldName', '@string', '[a-z0-9A-Z]+');
     }
 }
 

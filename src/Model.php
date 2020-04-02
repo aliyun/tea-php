@@ -50,6 +50,34 @@ class Model
         }
     }
 
+    public static function validateRequired($fieldName, $field, $val = null)
+    {
+        if ($val === true && null === $field) {
+            throw new \InvalidArgumentException($fieldName . ' is required');
+        }
+    }
+
+    public static function validateMaxLength($fieldName, $field, $val = null)
+    {
+        if (null !== $field && strlen($field) > intval($val)) {
+            throw new \InvalidArgumentException($fieldName . ' is exceed max-length: ' . $val);
+        }
+    }
+
+    public static function validateMinLength($fieldName, $field, $val = null)
+    {
+        if (null !== $field && strlen($field) < intval($val)) {
+            throw new \InvalidArgumentException($fieldName . ' is less than min-length: ' . $val);
+        }
+    }
+
+    public static function validatePattern($fieldName, $field, $regex = '')
+    {
+        if (null !== $field && !preg_match("/^$regex$/", $field)) {
+            throw new \InvalidArgumentException($fieldName . ' is not match ' . $regex);
+        }
+    }
+
     /**
      * @param array $map
      * @param Model $model
