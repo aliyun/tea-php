@@ -6,6 +6,10 @@ use AlibabaCloud\Tea\Model;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class ModelTest extends TestCase
 {
     public function testToMap()
@@ -13,26 +17,26 @@ class ModelTest extends TestCase
         $model = new ModelMock();
         $arr   = $model->toMap();
 
-        self::assertEquals("a", $arr["A"]);
-        self::assertEquals("b", $arr["b"]);
+        self::assertEquals('a', $arr['A']);
+        self::assertEquals('b', $arr['b']);
     }
 
     public function testValidate()
     {
         $model = new ModelMock();
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("c is required.");
+        $this->expectExceptionMessage('c is required.');
         $model->validate();
     }
 
     public function testInit()
     {
         $config = new Config([
-            "accessKeyId"     => "fakeAccessKeyId",
-            "accessKeySecret" => "fakeAccessKeySecret"
+            'accessKeyId'     => 'fakeAccessKeyId',
+            'accessKeySecret' => 'fakeAccessKeySecret',
         ]);
-        $this->assertEquals("fakeAccessKeyId", $config->accessKeyId);
-        $this->assertEquals("fakeAccessKeySecret", $config->accessKeySecret);
+        $this->assertEquals('fakeAccessKeyId', $config->accessKeyId);
+        $this->assertEquals('fakeAccessKeySecret', $config->accessKeySecret);
     }
 
     public function testToModel()
@@ -41,7 +45,7 @@ class ModelTest extends TestCase
             'A' => 1,
             'b' => 2,
             'c' => 3,
-            'd' => 4
+            'd' => 4,
         ], new ModelMock());
         $this->assertEquals(1, $model->a);
         $this->assertEquals(2, $model->b);
@@ -77,7 +81,7 @@ class ModelTest extends TestCase
 
     public function testValidatePattern()
     {
-        Model::validatePattern('FieldName', 'string123', "[a-z0-9A-Z]+");
+        Model::validatePattern('FieldName', 'string123', '[a-z0-9A-Z]+');
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('FieldName is not match [a-z0-9A-Z]+');
@@ -93,14 +97,14 @@ class Config extends Model
 
 class ModelMock extends Model
 {
-    public $a = "a";
-    public $b = "b";
-    public $c = "";
+    public $a = 'a';
+    public $b = 'b';
+    public $c = '';
 
     public function __construct()
     {
-        $this->_name["a"]     = "A";
-        $this->_required["c"] = true;
+        $this->_name['a']     = 'A';
+        $this->_required['c'] = true;
         parent::__construct();
     }
 }

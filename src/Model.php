@@ -21,6 +21,7 @@ class Model
         if (null === $name) {
             return $this->_name;
         }
+
         return isset($this->_name[$name]) ? $this->_name[$name] : $name;
     }
 
@@ -28,7 +29,7 @@ class Model
     {
         $map = get_object_vars($this);
         foreach ($map as $k => $m) {
-            if (0 === strpos($k, "_")) {
+            if (0 === strpos($k, '_')) {
                 unset($map[$k]);
             }
         }
@@ -37,6 +38,7 @@ class Model
             $name       = isset($this->_name[$k]) ? $this->_name[$k] : $k;
             $res[$name] = $v;
         }
+
         return $res;
     }
 
@@ -45,35 +47,35 @@ class Model
         $vars = get_object_vars($this);
         foreach ($vars as $k => $v) {
             if (isset($this->_required[$k]) && $this->_required[$k] && empty($v)) {
-                throw new \InvalidArgumentException("$k is required.");
+                throw new \InvalidArgumentException("{$k} is required.");
             }
         }
     }
 
     public static function validateRequired($fieldName, $field, $val = null)
     {
-        if ($val === true && null === $field) {
+        if (true === $val && null === $field) {
             throw new \InvalidArgumentException($fieldName . ' is required');
         }
     }
 
     public static function validateMaxLength($fieldName, $field, $val = null)
     {
-        if (null !== $field && strlen($field) > intval($val)) {
+        if (null !== $field && \strlen($field) > (int) $val) {
             throw new \InvalidArgumentException($fieldName . ' is exceed max-length: ' . $val);
         }
     }
 
     public static function validateMinLength($fieldName, $field, $val = null)
     {
-        if (null !== $field && strlen($field) < intval($val)) {
+        if (null !== $field && \strlen($field) < (int) $val) {
             throw new \InvalidArgumentException($fieldName . ' is less than min-length: ' . $val);
         }
     }
 
     public static function validatePattern($fieldName, $field, $regex = '')
     {
-        if (null !== $field && !preg_match("/^$regex$/", $field)) {
+        if (null !== $field && !preg_match("/^{$regex}$/", $field)) {
             throw new \InvalidArgumentException($fieldName . ' is not match ' . $regex);
         }
     }
@@ -92,6 +94,7 @@ class Model
             $name           = isset($names[$key]) ? $names[$key] : $key;
             $model->{$name} = $value;
         }
+
         return $model;
     }
 }

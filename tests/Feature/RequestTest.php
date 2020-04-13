@@ -7,9 +7,10 @@ use AlibabaCloud\Tea\Tea;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class RequestTest
+ * Class RequestTest.
  *
- * @package AlibabaCloud\Tea\Tests\Feature
+ * @internal
+ * @coversNothing
  */
 class RequestTest extends TestCase
 {
@@ -37,12 +38,12 @@ class RequestTest extends TestCase
         $request                  = new Request();
         $request->method          = 'POST';
         $request->protocol        = 'https';
-        $request->headers['host'] = "httpbin.org";
-        $request->body            = "this is body content";
+        $request->headers['host'] = 'httpbin.org';
+        $request->body            = 'this is body content';
         $request->pathname        = '/post';
 
         $res  = Tea::send($request);
-        $data = json_decode((string)$res->getBody(), true);
-        $this->assertEquals("this is body content", $data["data"]);
+        $data = json_decode((string) $res->getBody(), true);
+        $this->assertEquals('this is body content', $data['data']);
     }
 }

@@ -2,14 +2,12 @@
 
 namespace AlibabaCloud\Tea;
 
-use InvalidArgumentException;
 use GuzzleHttp\Psr7\Request as PsrRequest;
+use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 
 /**
- * Class Request
- *
- * @package Tea
+ * Class Request.
  */
 class Request extends PsrRequest
 {
@@ -45,7 +43,7 @@ class Request extends PsrRequest
 
     public $method;
 
-    public function __construct($method = "GET", $uri = "", array $headers = [], $body = null, $version = '1.1')
+    public function __construct($method = 'GET', $uri = '', array $headers = [], $body = null, $version = '1.1')
     {
         parent::__construct($method, $uri, $headers, $body, $version);
         $this->method = $method;
@@ -87,7 +85,7 @@ class Request extends PsrRequest
         $request = $request->withUri($uri);
         $request = $request->withMethod($this->method);
 
-        if ($this->body !== '' && $this->body !== null) {
+        if ('' !== $this->body && null !== $this->body) {
             if ($this->body instanceof StreamInterface) {
                 $request = $request->withBody($this->body);
             } else {
@@ -109,7 +107,7 @@ class Request extends PsrRequest
      */
     private function assertQuery($query)
     {
-        if (!is_array($query)) {
+        if (!\is_array($query)) {
             throw new InvalidArgumentException('Query must be array.');
         }
     }

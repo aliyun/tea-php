@@ -6,9 +6,10 @@ use AlibabaCloud\Tea\Request;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class RequestTest
+ * Class RequestTest.
  *
- * @package AlibabaCloud\Tea\Tests\Unit
+ * @internal
+ * @coversNothing
  */
 class RequestTest extends TestCase
 {
@@ -18,7 +19,7 @@ class RequestTest extends TestCase
         $request->protocol        = 'https';
         $request->headers['host'] = 'www.alibaba.com';
         $psrRequest               = $request->getPsrRequest();
-        self::assertEquals('https://www.alibaba.com/', (string)$psrRequest->getUri());
+        self::assertEquals('https://www.alibaba.com/', (string) $psrRequest->getUri());
         self::assertInstanceOf(\GuzzleHttp\Psr7\Request::class, $psrRequest);
     }
 }

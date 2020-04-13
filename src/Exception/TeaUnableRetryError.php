@@ -23,7 +23,7 @@ class TeaUnableRetryError extends RuntimeException
     {
         parent::__construct('TeaUnableRetryError', 0, null);
         $this->lastRequest   = $lastRequest;
-        $this->lastException = lastException;
+        $this->lastException = $lastException;
     }
 
     public function getLastRequest()
