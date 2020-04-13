@@ -5,9 +5,7 @@ namespace AlibabaCloud\Tea\Exception;
 use RuntimeException;
 
 /**
- * Class TeaRetryError
- *
- * @package AlibabaCloud\Tea\Exception
+ * Class TeaRetryError.
  */
 class TeaRetryError extends RuntimeException
 {
@@ -16,7 +14,7 @@ class TeaRetryError extends RuntimeException
      *
      * @param string          $message
      * @param int             $code
-     * @param \Throwable|null $previous
+     * @param null|\Throwable $previous
      */
     public function __construct($message = '', $code = 0, $previous = null)
     {

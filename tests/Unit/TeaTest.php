@@ -6,6 +6,10 @@ use AlibabaCloud\Tea\Exception\TeaError;
 use AlibabaCloud\Tea\Tea;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class TeaTest extends TestCase
 {
     public static function testAllowRetry()
@@ -14,7 +18,7 @@ class TeaTest extends TestCase
         $retryTimes = 2;
         self::assertFalse(Tea::allowRetry($runtime, $retryTimes, time()));
 
-        $runtime["maxAttempts"] = 3;
+        $runtime['maxAttempts'] = 3;
         self::assertTrue(Tea::allowRetry($runtime, $retryTimes, time()));
     }
 
@@ -24,16 +28,16 @@ class TeaTest extends TestCase
         $retryTimes = 3;
         self::assertEquals(0, Tea::getBackoffTime($runtime, $retryTimes));
 
-        $runtime["policy"] = "yes";
+        $runtime['policy'] = 'yes';
         self::assertEquals(0, Tea::getBackoffTime($runtime, $retryTimes));
 
-        $runtime["period"] = 0;
+        $runtime['period'] = 0;
         self::assertEquals(3, Tea::getBackoffTime($runtime, $retryTimes));
 
-        $runtime["period"] = -1;
+        $runtime['period'] = -1;
         self::assertEquals(3, Tea::getBackoffTime($runtime, $retryTimes));
 
-        $runtime["period"] = 1;
+        $runtime['period'] = 1;
         self::assertEquals(1, Tea::getBackoffTime($runtime, $retryTimes));
     }
 
@@ -49,13 +53,13 @@ class TeaTest extends TestCase
     public static function testIsRetryable()
     {
         $exception = new TeaError([
-            "data"    => [],
-            "message" => "error message"
+            'data'    => [],
+            'message' => 'error message',
         ]);
-        $retry     = ["maxAttempts" => 3];
+        $retry     = ['maxAttempts' => 3];
         self::assertTrue(Tea::isRetryable($retry, 1));
 
         $errorInfo = $exception->getErrorInfo();
-        self::assertEquals("error message", $errorInfo["message"]);
+        self::assertEquals('error message', $errorInfo['message']);
     }
 }

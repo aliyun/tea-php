@@ -9,9 +9,7 @@ use Stringy\Stringy;
 use Traversable;
 
 /**
- * Class Parameter
- *
- * @package AlibabaCloud\Tea
+ * Class Parameter.
  */
 abstract class Parameter implements IteratorAggregate
 {
@@ -34,7 +32,7 @@ abstract class Parameter implements IteratorAggregate
 
         foreach ($properties as $property) {
             $docComment  = $property->getDocComment();
-            $key         = (string)Stringy::create($docComment)->between('@real ', "\n");
+            $key         = (string) Stringy::create($docComment)->between('@real ', "\n");
             $key         = trim($key);
             $value       = $property->getValue($this);
             $array[$key] = $value;

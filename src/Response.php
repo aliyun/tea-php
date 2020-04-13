@@ -3,32 +3,24 @@
 namespace AlibabaCloud\Tea;
 
 use Adbar\Dot;
-use Countable;
 use ArrayAccess;
+use Countable;
+use GuzzleHttp\Psr7\Response as PsrResponse;
+use GuzzleHttp\TransferStats;
 use IteratorAggregate;
 use JmesPath\Env as JmesPath;
-use GuzzleHttp\TransferStats;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Songshenzong\Support\Strings;
-use Psr\Http\Message\ResponseInterface;
-use GuzzleHttp\Psr7\Response as PsrResponse;
 
 /**
- * Class Response
- *
- * @package Tea
+ * Class Response.
  */
 class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Countable
 {
     public $headers = [];
     public $statusCode;
-    public $statusMessage = "";
-    /**
-     * Instance of the Dot.
-     *
-     * @var Dot
-     */
-    protected $dot;
+    public $statusMessage = '';
 
     /**
      * @var TransferStats
@@ -39,11 +31,15 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
      * @var StreamInterface
      */
     public $body;
+    /**
+     * Instance of the Dot.
+     *
+     * @var Dot
+     */
+    protected $dot;
 
     /**
      * Response constructor.
-     *
-     * @param ResponseInterface $response
      */
     public function __construct(ResponseInterface $response)
     {
@@ -61,7 +57,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
             $this->body->seek(0);
         }
 
-        if (Strings::isJson((string)$this->getBody())) {
+        if (Strings::isJson((string) $this->getBody())) {
             $this->dot = new Dot($this->toArray());
         } else {
             $this->dot = new Dot();
@@ -73,7 +69,49 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
      */
     public function __toString()
     {
-        return (string)$this->getBody();
+        return (string) $this->getBody();
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return null|mixed
+     */
+    public function __get($name)
+    {
+        $data = $this->dot->all();
+        if (!isset($data[$name])) {
+            return null;
+        }
+
+        return json_decode(json_encode($data))->{$name};
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $value
+     */
+    public function __set($name, $value)
+    {
+        $this->dot->set($name, $value);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        return $this->dot->has($name);
+    }
+
+    /**
+     * @param $offset
+     */
+    public function __unset($offset)
+    {
+        $this->dot->delete($offset);
     }
 
     /**
@@ -81,13 +119,13 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
      */
     public function toArray()
     {
-        return \GuzzleHttp\json_decode((string)$this->getBody(), true);
+        return \GuzzleHttp\json_decode((string) $this->getBody(), true);
     }
 
     /**
      * @param string $expression
      *
-     * @return mixed|null
+     * @return null|mixed
      */
     public function search($expression)
     {
@@ -112,7 +150,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     }
 
     /**
-     * @param array|int|string|null $keys
+     * @param null|array|int|string $keys
      */
     public function clear($keys = null)
     {
@@ -129,7 +167,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
 
     /**
      * @param string     $delimiter
-     * @param array|null $items
+     * @param null|array $items
      * @param string     $prepend
      *
      * @return array
@@ -140,7 +178,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     }
 
     /**
-     * @param int|string|null $key
+     * @param null|int|string $key
      * @param mixed           $default
      *
      * @return mixed
@@ -161,7 +199,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     }
 
     /**
-     * @param array|int|string|null $keys
+     * @param null|array|int|string $keys
      *
      * @return bool
      */
@@ -171,7 +209,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     }
 
     /**
-     * @param array|string|self $key
+     * @param array|self|string $key
      * @param array|self        $value
      */
     public function merge($key, $value = [])
@@ -180,7 +218,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     }
 
     /**
-     * @param array|string|self $key
+     * @param array|self|string $key
      * @param array|self        $value
      */
     public function mergeRecursive($key, $value = [])
@@ -189,7 +227,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     }
 
     /**
-     * @param array|string|self $key
+     * @param array|self|string $key
      * @param array|self        $value
      */
     public function mergeRecursiveDistinct($key, $value = [])
@@ -198,7 +236,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     }
 
     /**
-     * @param int|string|null $key
+     * @param null|int|string $key
      * @param mixed           $default
      *
      * @return mixed
@@ -209,7 +247,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     }
 
     /**
-     * @param int|string|null $key
+     * @param null|int|string $key
      * @param mixed           $value
      *
      * @return mixed
@@ -221,9 +259,9 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
 
     /**
      * Replace all values or values within the given key
-     * with an array or Dot object
+     * with an array or Dot object.
      *
-     * @param array|string|self $key
+     * @param array|self|string $key
      * @param array|self        $value
      */
     public function replace($key, $value = [])
@@ -232,7 +270,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     }
 
     /**
-     * Set a given key / value pair or pairs
+     * Set a given key / value pair or pairs.
      *
      * @param array|int|string $keys
      * @param mixed            $value
@@ -243,7 +281,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     }
 
     /**
-     * Replace all items with a given array
+     * Replace all items with a given array.
      *
      * @param mixed $items
      */
@@ -253,9 +291,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     }
 
     /**
-     * Replace all items with a given array as a reference
-     *
-     * @param array $items
+     * Replace all items with a given array as a reference.
      */
     public function setReference(array &$items)
     {
@@ -263,7 +299,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     }
 
     /**
-     * Return the value of a given key or all the values as JSON
+     * Return the value of a given key or all the values as JSON.
      *
      * @param mixed $key
      * @param int   $options
@@ -276,7 +312,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     }
 
     /**
-     * Retrieve an external iterator
+     * Retrieve an external iterator.
      */
     public function getIterator()
     {
@@ -284,7 +320,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     }
 
     /**
-     * Whether a offset exists
+     * Whether a offset exists.
      *
      * @param $offset
      *
@@ -296,7 +332,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     }
 
     /**
-     * Offset to retrieve
+     * Offset to retrieve.
      *
      * @param $offset
      *
@@ -308,7 +344,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     }
 
     /**
-     * Offset to set
+     * Offset to set.
      *
      * @param $offset
      * @param $value
@@ -319,7 +355,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     }
 
     /**
-     * Offset to unset
+     * Offset to unset.
      *
      * @param $offset
      */
@@ -329,7 +365,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     }
 
     /**
-     * Count elements of an object
+     * Count elements of an object.
      *
      * @param null $key
      *
@@ -338,49 +374,5 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     public function count($key = null)
     {
         return $this->dot->count($key);
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return mixed|null
-     */
-    public function __get($name)
-    {
-        $data = $this->dot->all();
-        if (!isset($data[$name])) {
-            return null;
-        }
-
-        return \json_decode(\json_encode($data))->$name;
-    }
-
-    /**
-     * @param string $name
-     * @param mixed  $value
-     */
-    public function __set($name, $value)
-    {
-        $this->dot->set($name, $value);
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function __isset($name)
-    {
-        return $this->dot->has($name);
-    }
-
-    /**
-     * @param $offset
-     *
-     * @return void
-     */
-    public function __unset($offset)
-    {
-        $this->dot->delete($offset);
     }
 }

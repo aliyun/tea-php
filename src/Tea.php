@@ -3,20 +3,18 @@
 namespace AlibabaCloud\Tea;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Middleware;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\TransferStats;
-use Songshenzong\Support\Arrays;
-use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use GuzzleHttp\Promise\PromiseInterface;
-use GuzzleHttp\Exception\GuzzleException;
+use Psr\Http\Message\UriInterface;
+use Songshenzong\Support\Arrays;
 
 /**
- * Class Tea
- *
- * @package AlibabaCloud\Tea
+ * Class Tea.
  */
 class Tea
 {
@@ -25,18 +23,12 @@ class Tea
      */
     private static $config = [];
 
-    /**
-     * @param array $config
-     */
     public static function config(array $config)
     {
         self::$config = $config;
     }
 
     /**
-     * @param Request $request
-     * @param array            $config
-     *
      * @return Response
      */
     public static function send(Request $request, array $config = [])
@@ -51,13 +43,11 @@ class Tea
             $request,
             $config
         );
+
         return new Response($res);
     }
 
     /**
-     * @param RequestInterface $request
-     * @param array            $config
-     *
      * @return PromiseInterface
      */
     public static function sendAsync(RequestInterface $request, array $config = [])
@@ -75,8 +65,6 @@ class Tea
     }
 
     /**
-     * @param array $config
-     *
      * @return Client
      */
     public static function client(array $config = [])
@@ -125,7 +113,7 @@ class Tea
      */
     public static function string($method, $uri, $options = [])
     {
-        return (string)self::client()->request($method, $uri, $options)
+        return (string) self::client()->request($method, $uri, $options)
             ->getBody();
     }
 
@@ -145,8 +133,9 @@ class Tea
      * @param string|UriInterface $uri
      * @param array               $options
      *
-     * @return mixed|null
      * @throws GuzzleException
+     *
+     * @return null|mixed
      */
     public static function getHeaders($uri, $options = [])
     {
@@ -156,10 +145,11 @@ class Tea
     /**
      * @param string|UriInterface $uri
      * @param string              $key
-     * @param mixed|null          $default
+     * @param null|mixed          $default
      *
-     * @return mixed|null
      * @throws GuzzleException
+     *
+     * @return null|mixed
      */
     public static function getHeader($uri, $key, $default = null)
     {
@@ -169,7 +159,6 @@ class Tea
     }
 
     /**
-     * @param array $runtime
      * @param int   $retryTimes
      * @param float $now
      *
@@ -182,32 +171,33 @@ class Tea
             return false;
         }
         $maxAttempts = $runtime['maxAttempts'];
-        $retry       = empty($maxAttempts) ? 0 : intval($maxAttempts);
+        $retry       = empty($maxAttempts) ? 0 : (int) $maxAttempts;
+
         return $retry >= $retryTimes;
     }
 
     /**
-     * @param array $runtime
-     * @param int   $retryTimes
+     * @param int $retryTimes
      *
      * @return int
      */
     public static function getBackoffTime(array $runtime, $retryTimes)
     {
         $backOffTime = 0;
-        $policy      = isset($runtime["policy"]) ? $runtime["policy"] : "";
+        $policy      = isset($runtime['policy']) ? $runtime['policy'] : '';
 
-        if (empty($policy) || $policy == "no") {
+        if (empty($policy) || 'no' == $policy) {
             return $backOffTime;
         }
 
-        $period = isset($runtime["period"]) ? $runtime["period"] : "";
-        if (null !== $period && "" !== $period) {
-            $backOffTime = intval($period);
+        $period = isset($runtime['period']) ? $runtime['period'] : '';
+        if (null !== $period && '' !== $period) {
+            $backOffTime = (int) $period;
             if ($backOffTime <= 0) {
                 return $retryTimes;
             }
         }
+
         return $backOffTime;
     }
 
@@ -220,10 +210,13 @@ class Tea
     {
         if ($retry instanceof TeaError) {
             return true;
-        } elseif (is_array($retry)) {
-            $max = isset($retry["maxAttempts"]) ? intval($retry["maxAttempts"]) : 3;
+        }
+        if (\is_array($retry)) {
+            $max = isset($retry['maxAttempts']) ? (int) ($retry['maxAttempts']) : 3;
+
             return $retryTimes <= $max;
         }
+
         return false;
     }
 
@@ -237,18 +230,19 @@ class Tea
         $tmp = [];
         $n   = 0;
         foreach ($item as $i) {
-            if (is_object($i)) {
+            if (\is_object($i)) {
                 if ($i instanceof Model) {
                     $i = $i->toMap();
                 } else {
                     $i = json_decode(json_encode($i), true);
                 }
             }
-            if (!is_array($i)) {
+            if (!\is_array($i)) {
                 throw new \InvalidArgumentException($i);
             }
             $tmp[$n++] = $i;
         }
-        return call_user_func_array('array_merge', $tmp);
+
+        return \call_user_func_array('array_merge', $tmp);
     }
 }
