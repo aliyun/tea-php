@@ -237,6 +237,9 @@ class Tea
                     $i = json_decode(json_encode($i), true);
                 }
             }
+            if (null === $i) {
+                continue;
+            }
             if (!\is_array($i)) {
                 throw new \InvalidArgumentException($i);
             }

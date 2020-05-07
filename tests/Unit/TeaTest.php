@@ -62,4 +62,19 @@ class TeaTest extends TestCase
         $errorInfo = $exception->getErrorInfo();
         self::assertEquals('error message', $errorInfo['message']);
     }
+
+    public static function testMerge()
+    {
+        self::assertEquals([
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+        ], Tea::merge(
+            ['a' => 1],
+            null,
+            ['b' => 2],
+            null,
+            ['c' => 3]
+        ));
+    }
 }
