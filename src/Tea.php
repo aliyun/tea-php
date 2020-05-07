@@ -12,6 +12,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Songshenzong\Support\Arrays;
+use AlibabaCloud\Tea\Exception\TeaError;
 
 /**
  * Class Tea.
