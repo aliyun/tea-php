@@ -80,6 +80,20 @@ class Model
         }
     }
 
+    public static function validateMaximum($fieldName, $field, $val)
+    {
+        if (null !== $field && $field > $val) {
+            throw new \InvalidArgumentException($fieldName . ' cannot be greater than ' . $val);
+        }
+    }
+
+    public static function validateMinimum($fieldName, $field, $val)
+    {
+        if (null !== $field && $field < $val) {
+            throw new \InvalidArgumentException($fieldName . ' cannot be less than ' . $val);
+        }
+    }
+
     /**
      * @param array $map
      * @param Model $model
