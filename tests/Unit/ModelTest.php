@@ -87,6 +87,24 @@ class ModelTest extends TestCase
         $this->expectExceptionMessage('FieldName is not match [a-z0-9A-Z]+');
         Model::validatePattern('FieldName', '@string', '[a-z0-9A-Z]+');
     }
+
+    public function testValidateMaximum()
+    {
+        Model::validateMaximum('FieldName', 100, 101);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('FieldName cannot be greater than 99');
+        Model::validateMaximum('FieldName', 100, 99);
+    }
+
+    public function testValidateMinimum()
+    {
+        Model::validateMinimum('FieldName', 100, 99);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('FieldName cannot be less than 101');
+        Model::validateMinimum('FieldName', 100, 101);
+    }
 }
 
 class Config extends Model
