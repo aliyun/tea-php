@@ -5,7 +5,6 @@ namespace AlibabaCloud\Tea;
 use ArrayIterator;
 use IteratorAggregate;
 use ReflectionObject;
-use Stringy\Stringy;
 use Traversable;
 
 /**
@@ -32,8 +31,7 @@ abstract class Parameter implements IteratorAggregate
 
         foreach ($properties as $property) {
             $docComment  = $property->getDocComment();
-            $key         = (string) Stringy::create($docComment)->between('@real ', "\n");
-            $key         = trim($key);
+            $key         = trim(Helper::findFromString($docComment, '@real', "\n"));
             $value       = $property->getValue($this);
             $array[$key] = $value;
         }

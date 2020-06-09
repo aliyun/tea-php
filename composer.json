@@ -31,9 +31,6 @@
         "ext-simplexml": "*",
         "ext-xmlwriter": "*",
         "guzzlehttp/guzzle": "^6.3",
-        "songshenzong/support": "^2.0",
-        "danielstjules/stringy": "^3.1",
-        "mtdowling/jmespath.php": "^2.4",
         "adbario/php-dot-notation": "^2.2"
     },
     "require-dev": {
