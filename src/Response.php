@@ -8,10 +8,8 @@ use Countable;
 use GuzzleHttp\Psr7\Response as PsrResponse;
 use GuzzleHttp\TransferStats;
 use IteratorAggregate;
-use JmesPath\Env as JmesPath;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use Songshenzong\Support\Strings;
 
 /**
  * Class Response.
@@ -57,7 +55,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
             $this->body->seek(0);
         }
 
-        if (Strings::isJson((string) $this->getBody())) {
+        if (Helper::isJson((string) $this->getBody())) {
             $this->dot = new Dot($this->toArray());
         } else {
             $this->dot = new Dot();
@@ -120,16 +118,6 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     public function toArray()
     {
         return \GuzzleHttp\json_decode((string) $this->getBody(), true);
-    }
-
-    /**
-     * @param string $expression
-     *
-     * @return null|mixed
-     */
-    public function search($expression)
-    {
-        return JmesPath::search($expression, $this->dot->all());
     }
 
     /**

@@ -12,7 +12,6 @@ use GuzzleHttp\TransferStats;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
-use Songshenzong\Support\Arrays;
 
 /**
  * Class Tea.
@@ -30,6 +29,8 @@ class Tea
     }
 
     /**
+     * @throws GuzzleException
+     *
      * @return Response
      */
     public static function send(Request $request, array $config = [])
@@ -88,7 +89,7 @@ class Tea
             };
         }
 
-        $new_config = Arrays::merge([self::$config, $config]);
+        $new_config = Helper::merge([self::$config, $config]);
 
         return new Client($new_config);
     }
@@ -97,6 +98,8 @@ class Tea
      * @param string              $method
      * @param string|UriInterface $uri
      * @param array               $options
+     *
+     * @throws GuzzleException
      *
      * @return ResponseInterface
      */
@@ -109,6 +112,8 @@ class Tea
      * @param string $method
      * @param string $uri
      * @param array  $options
+     *
+     * @throws GuzzleException
      *
      * @return string
      */
