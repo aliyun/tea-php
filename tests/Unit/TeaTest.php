@@ -3,6 +3,7 @@
 namespace AlibabaCloud\Tea\Tests\Unit;
 
 use AlibabaCloud\Tea\Exception\TeaError;
+use AlibabaCloud\Tea\Request;
 use AlibabaCloud\Tea\Tea;
 use PHPUnit\Framework\TestCase;
 
@@ -76,5 +77,22 @@ class TeaTest extends TestCase
             null,
             ['c' => 3]
         ));
+    }
+
+    public static function testRequest()
+    {
+        ini_set('xdebug.max_nesting_level', 100);
+        $count = 102;
+        while ($count > 0) {
+            $request                  = new Request();
+            $request->method          = 'GET';
+            $request->protocol        = 'http';
+            $request->headers['host'] = 'example.com';
+            $request->port            = 80;
+            Tea::send($request);
+            --$count;
+        }
+        // No Exception is OK
+        self::assertTrue(true);
     }
 }
