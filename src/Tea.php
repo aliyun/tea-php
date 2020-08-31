@@ -75,11 +75,10 @@ class Tea
             $stack = self::$config['handler'];
         } else {
             $stack = HandlerStack::create();
+            $stack->push(Middleware::mapResponse(static function (ResponseInterface $response) {
+                return new Response($response);
+            }));
         }
-
-        $stack->push(Middleware::mapResponse(static function (ResponseInterface $response) {
-            return new Response($response);
-        }));
 
         self::$config['handler'] = $stack;
 
