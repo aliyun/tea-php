@@ -15,12 +15,16 @@ class TeaUnableRetryError extends TeaError
     /**
      * TeaUnableRetryError constructor.
      *
-     * @param Request    $lastRequest
-     * @param \Exception $lastException
+     * @param Request         $lastRequest
+     * @param null|\Throwable $lastException
      */
     public function __construct($lastRequest, $lastException = null)
     {
-        parent::__construct([], 'TeaUnableRetryError', 0, null);
+        $error_info = [];
+        if (null !== $lastException && $lastException instanceof TeaError) {
+            $error_info = $lastException->getErrorInfo();
+        }
+        parent::__construct($error_info, $lastException->getMessage(), $lastException->getCode(), $lastException);
         $this->lastRequest   = $lastRequest;
         $this->lastException = $lastException;
     }
