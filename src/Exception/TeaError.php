@@ -9,11 +9,11 @@ use RuntimeException;
  */
 class TeaError extends RuntimeException
 {
+    public $message = '';
+    public $code    = 0;
+    public $data;
+    public $name    = '';
     private $errorInfo;
-    public  $message = '';
-    public  $code    = 0;
-    public  $data    = null;
-    public  $name    = '';
 
     /**
      * TeaError constructor.
@@ -27,17 +27,13 @@ class TeaError extends RuntimeException
     {
         parent::__construct($message, $code, $previous);
         $this->errorInfo = $errorInfo;
-        if (isset($this->errorInfo['name'])) {
-            $this->name = $this->errorInfo['name'];
-        }
-        if (isset($this->errorInfo['message'])) {
-            $this->message = $this->errorInfo['message'];
-        }
-        if (isset($this->errorInfo['code'])) {
-            $this->code = $this->errorInfo['code'];
-        }
-        if (isset($this->errorInfo['data'])) {
-            $this->data = $this->errorInfo['data'];
+        if (!empty($errorInfo)) {
+            $properties = ['name', 'message', 'code', 'data'];
+            foreach ($properties as $property) {
+                if (isset($errorInfo[$property])) {
+                    $this->{$property} = $errorInfo[$property];
+                }
+            }
         }
     }
 
