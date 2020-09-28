@@ -30,7 +30,7 @@
         "ext-openssl": "*",
         "ext-simplexml": "*",
         "ext-xmlwriter": "*",
-        "guzzlehttp/guzzle": "^6.3",
+        "guzzlehttp/guzzle": "^6.3|^7.0",
         "adbario/php-dot-notation": "^2.2"
     },
     "require-dev": {
