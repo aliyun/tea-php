@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 3.1.19 - 2020-10-09
+
+- Fix the error when the code value is a string.
+
 ## 3.1.18 - 2020-09-28
 
 - Require Guzzle Version 7.0
