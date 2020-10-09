@@ -1,5 +1,88 @@
 # CHANGELOG
 
+## 3.1.18 - 2020-09-28
+
+- Require Guzzle Version 7.0
+
+## 3.1.17 - 2020-09-24
+
+- TeaUnableRetryError support get error info.
+
+## 3.1.16 - 2020-08-31
+
+- Fix the Maximum function nesting level error when repeated network requests.
+
+## 3.1.15 - 2020-07-28
+
+- Improved validatePattern method.
+
+## 3.1.14 - 2020-07-03
+
+- Supported set properties of TeaError with `ErrorInfo`.
+
+## 3.1.13 - 2020-06-09
+
+- Reduce dependencies.
+
+## 3.1.12 - 2020-05-13
+
+- Add validate method.
+- Supported validate maximun&minimun of property.
+
+## 3.1.11 - 2020-05-07
+
+- Fixed error when class is undefined.
+
+## 3.1.10 - 2020-05-07
+
+- Fixed error when '$item' of array is null
+
+## 3.1.9 - 2020-04-13
+
+- TeaUnableRetryError add $lastException param.
+
+## 3.1.8 - 2020-04-02
+
+- Added some static methods of Model to validate fields of Model.
+
+## 3.1.7 - 2020-03-27
+
+- Improve Tea::isRetryable method.
+
+## 3.1.6 - 2020-03-25
+
+- Fixed bug when body is StreamInterface.
+
+## 3.1.5 - 2020-03-25
+
+- Improve Model.toMap method.
+- Improve Tea.merge method.
+- Fixed tests.
+
+## 3.1.4 - 2020-03-20
+
+- Added Tea::merge method.
+- Change Tea::isRetryable method.
+
+## 3.1.3 - 2020-03-20
+
+- Model: added toModel method.
+
+## 3.1.2 - 2020-03-19
+
+- Model constructor supported array type parameter.
+
+## 3.1.1 - 2020-03-18
+
+- Fixed bug : set method failed.
+- Fixed bug : get empty contents form body.
+
+## 3.1.0 - 2020-03-13
+
+- TeaUnableRetryError add 'lastRequest' property.
+- Change Tea.send() method return.
+- Fixed Tea. allowRetry() method.
+
 ## 3.0.0 - 2020-02-14
 - Rename package name.
 
