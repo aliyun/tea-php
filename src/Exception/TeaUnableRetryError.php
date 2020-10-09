@@ -16,7 +16,7 @@ class TeaUnableRetryError extends TeaError
      * TeaUnableRetryError constructor.
      *
      * @param Request         $lastRequest
-     * @param null|\Throwable $lastException
+     * @param null|\Exception $lastException
      */
     public function __construct($lastRequest, $lastException = null)
     {

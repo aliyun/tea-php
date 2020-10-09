@@ -25,7 +25,7 @@ class TeaError extends RuntimeException
      */
     public function __construct($errorInfo = [], $message = '', $code = 0, $previous = null)
     {
-        parent::__construct($message, $code, $previous);
+        parent::__construct((string)$message, (int)$code, $previous);
         $this->errorInfo = $errorInfo;
         if (!empty($errorInfo)) {
             $properties = ['name', 'message', 'code', 'data'];
