@@ -79,6 +79,16 @@ class TeaTest extends TestCase
             null,
             ['c' => 3]
         ));
+        self::assertEquals([
+            'A' => 'a',
+            'b' => 'b',
+            'c' => '',
+        ], Tea::merge(
+            new ModelMock()
+        ));
+        self::assertEquals([], Tea::merge(null, 1, true, "string"));
+
+        self::assertEquals([], Tea::merge());
     }
 
     public static function testRequest()
