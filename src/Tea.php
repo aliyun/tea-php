@@ -245,12 +245,15 @@ class Tea
             if (null === $i) {
                 continue;
             }
-            if (!\is_array($i)) {
-                throw new \InvalidArgumentException($i);
+            if (\is_array($i)) {
+                $tmp[$n++] = $i;
             }
-            $tmp[$n++] = $i;
         }
 
-        return \call_user_func_array('array_merge', $tmp);
+        if (count($tmp)) {
+            return \call_user_func_array('array_merge', $tmp);
+        }
+
+        return [];
     }
 }
