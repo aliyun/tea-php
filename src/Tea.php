@@ -2,6 +2,7 @@
 
 namespace AlibabaCloud\Tea;
 
+use Adbar\Dot;
 use AlibabaCloud\Tea\Exception\TeaError;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -39,7 +40,7 @@ class Tea
             $request = $request->getPsrRequest();
         }
 
-        $config['http_errors'] = false;
+        $config = self::resolveConfig($config);
 
         $res = self::client()->send(
             $request,
@@ -58,7 +59,7 @@ class Tea
             $request = $request->getPsrRequest();
         }
 
-        $config['http_errors'] = false;
+        $config = self::resolveConfig($config);
 
         return self::client()->sendAsync(
             $request,
@@ -250,10 +251,31 @@ class Tea
             }
         }
 
-        if (count($tmp)) {
+        if (\count($tmp)) {
             return \call_user_func_array('array_merge', $tmp);
         }
 
         return [];
+    }
+
+    private static function resolveConfig(array $config = [])
+    {
+        $options = new Dot(['http_errors' => false]);
+        if (isset($config['httpProxy']) && !empty($config['httpProxy'])) {
+            $options->set('proxy.http', $config['httpProxy']);
+        }
+        if (isset($config['httpsProxy']) && !empty($config['httpsProxy'])) {
+            $options->set('proxy.https', $config['httpsProxy']);
+        }
+        if (isset($config['noProxy']) && !empty($config['noProxy'])) {
+            $options->set('proxy.no', $config['noProxy']);
+        }
+        // readTimeout&connectTimeout unit is millisecond
+        $read_timeout = isset($config['readTimeout']) && !empty($config['readTimeout']) ? (int) $config['readTimeout'] : 0;
+        $con_timeout  = isset($config['connectTimeout']) && !empty($config['connectTimeout']) ? (int) $config['connectTimeout'] : 0;
+        // timeout unit is second
+        $options->set('timeout', ($read_timeout + $con_timeout) / 1000);
+
+        return $options->all();
     }
 }
