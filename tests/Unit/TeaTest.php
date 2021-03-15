@@ -59,7 +59,7 @@ class TeaTest extends TestCase
         ], 'error message', '500');
         self::assertEquals(500, $exception->getCode());
 
-        $retry     = ['maxAttempts' => 3];
+        $retry = ['maxAttempts' => 3];
         self::assertTrue(Tea::isRetryable($retry, 1));
 
         $errorInfo = $exception->getErrorInfo();
@@ -86,7 +86,7 @@ class TeaTest extends TestCase
         ], Tea::merge(
             new ModelMock()
         ));
-        self::assertEquals([], Tea::merge(null, 1, true, "string"));
+        self::assertEquals([], Tea::merge(null, 1, true, 'string'));
 
         self::assertEquals([], Tea::merge());
     }
@@ -106,5 +106,35 @@ class TeaTest extends TestCase
         }
         // No Exception is OK
         self::assertTrue(true);
+    }
+
+    public static function testProxy()
+    {
+        $request = new Request('GET', 'https://next.api.aliyun.com/home');
+        Tea::send($request); // not throw exception
+
+        try {
+            Tea::send($request, [
+                'httpsProxy'  => 'http://127.0.0.1:1234',
+                'readTimeout' => 3000,
+            ]);
+            // cannot be here
+            self::assertTrue(false);
+        } catch (\Exception $e) {
+            self::assertEquals('cURL error 7: Failed to connect to 127.0.0.1 port 1234: Connection refused (see https://curl.haxx.se/libcurl/c/libcurl-errors.html) for https://next.api.aliyun.com/', $e->getMessage());
+        }
+
+        try {
+            $request           = new Request('GET', 'http://next.api.aliyun.com/home');
+            $request->protocol = 'http';
+            Tea::send($request, [
+                'httpProxy'   => 'http://127.0.0.1:1234',
+                'readTimeout' => 3000,
+            ]);
+            // cannot be here
+            self::assertTrue(false);
+        } catch (\Exception $e) {
+            self::assertEquals('cURL error 7: Failed to connect to 127.0.0.1 port 1234: Connection refused (see https://curl.haxx.se/libcurl/c/libcurl-errors.html) for http://next.api.aliyun.com/', $e->getMessage());
+        }
     }
 }

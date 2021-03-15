@@ -90,9 +90,10 @@ class ModelTest extends TestCase
 
     public function testValidatePatternWithEmptyValue()
     {
-        Model::validatePattern('FieldName', null, "/^[a-zA-Z0-9_-]+$/");
-        Model::validatePattern('FieldName', '', "/^[a-zA-Z0-9_-]+$/");
+        Model::validatePattern('FieldName', null, '/^[a-zA-Z0-9_-]+$/');
+        Model::validatePattern('FieldName', '', '/^[a-zA-Z0-9_-]+$/');
         // No throws is OK
+        self::assertTrue(true);
     }
 
     public function testValidateMaximum()

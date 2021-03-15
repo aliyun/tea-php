@@ -75,7 +75,7 @@ class Model
 
     public static function validatePattern($fieldName, $field, $regex = '')
     {
-        if (null !== $field && "" !== $field && !preg_match("/^{$regex}$/", $field)) {
+        if (null !== $field && '' !== $field && !preg_match("/^{$regex}$/", $field)) {
             throw new \InvalidArgumentException($fieldName . ' is not match ' . $regex);
         }
     }
