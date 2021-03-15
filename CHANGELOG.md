@@ -1,8 +1,12 @@
 # CHANGELOG
 
-## 3.1.20 - 2021-03-15
+## 3.1.21 - 2021-03-15
 
 - Supported set proxy&timeout on request.
+
+## 3.1.20 - 2020-12-02
+
+- Fix the warning when the Tea::merge method received empty arguments.
 
 ## 3.1.19 - 2020-10-09
 
