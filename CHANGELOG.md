@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 3.1.20 - 2021-03-15
+
+- Supported set proxy&timeout on request.
+
 ## 3.1.19 - 2020-10-09
 
 - Fix the error when the code value is a string.
