@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 3.1.22 - 2021-05-11
+
+- Deprecate `stream_for` method.
+
 ## 3.1.21 - 2021-03-15
 
 - Supported set proxy&timeout on request.
