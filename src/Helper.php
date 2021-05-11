@@ -34,7 +34,7 @@ class Helper
     {
         json_decode($str);
 
-        return JSON_ERROR_NONE == json_last_error();
+        return \JSON_ERROR_NONE == json_last_error();
     }
 
     /**

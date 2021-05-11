@@ -2,7 +2,7 @@
 
 use Symfony\Component\Dotenv\Dotenv;
 
-error_reporting(E_ALL);
+error_reporting(\E_ALL);
 ini_set('display_errors', '1');
 if (!ini_get('date.timezone')) {
     date_default_timezone_set('GMT');
@@ -18,9 +18,9 @@ if (!ini_get('date.timezone')) {
 |
 */
 
-require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+require dirname(__DIR__) . \DIRECTORY_SEPARATOR . 'vendor' . \DIRECTORY_SEPARATOR . 'autoload.php';
 
-$env = dirname(__DIR__) . DIRECTORY_SEPARATOR . '.env';
+$env = dirname(__DIR__) . \DIRECTORY_SEPARATOR . '.env';
 if (is_readable($env)) {
     (new Dotenv())->load($env);
 }
