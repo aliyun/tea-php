@@ -89,7 +89,11 @@ class Request extends PsrRequest
             if ($this->body instanceof StreamInterface) {
                 $request = $request->withBody($this->body);
             } else {
-                $request = $request->withBody(\GuzzleHttp\Psr7\stream_for($this->body));
+                if (\function_exists('\GuzzleHttp\Psr7\stream_for')) {
+                    $request = $request->withBody(\GuzzleHttp\Psr7\stream_for($this->body));
+                } else {
+                    $request = $request->withBody(\GuzzleHttp\Psr7\Utils::streamFor($this->body));
+                }
             }
         }
 
