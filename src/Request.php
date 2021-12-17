@@ -112,7 +112,7 @@ class Request extends PsrRequest
      */
     private function assertQuery($query)
     {
-        if (!\is_array($query)) {
+        if (!\is_array($query) && $query !== null) {
             throw new InvalidArgumentException('Query must be array.');
         }
     }
