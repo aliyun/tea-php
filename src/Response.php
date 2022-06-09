@@ -302,6 +302,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
     /**
      * Retrieve an external iterator.
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return $this->dot->getIterator();
@@ -314,6 +315,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
      *
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return $this->dot->offsetExists($offset);
@@ -326,6 +328,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
      *
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->dot->offsetGet($offset);
@@ -337,6 +340,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
      * @param $offset
      * @param $value
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->dot->offsetSet($offset, $value);
@@ -347,6 +351,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
      *
      * @param $offset
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         $this->dot->offsetUnset($offset);
@@ -359,6 +364,7 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
      *
      * @return int
      */
+    #[\ReturnTypeWillChange]
     public function count($key = null)
     {
         return $this->dot->count($key);
