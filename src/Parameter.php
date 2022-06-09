@@ -15,6 +15,7 @@ abstract class Parameter implements IteratorAggregate
     /**
      * @return ArrayIterator|Traversable
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new ArrayIterator($this->toArray());
