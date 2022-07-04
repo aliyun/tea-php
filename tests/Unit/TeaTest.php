@@ -131,7 +131,7 @@ class TeaTest extends TestCase
             // cannot be here
             self::assertTrue(false);
         } catch (\Exception $e) {
-            self::assertEquals('cURL error 7: Failed to connect to 127.0.0.1 port 1234: Connection refused (see https://curl.haxx.se/libcurl/c/libcurl-errors.html) for https://next.api.aliyun.com/', $e->getMessage());
+            self::assertTrue(0 === strpos($e->getMessage(), 'cURL error 7: Failed to connect to 127.0.0.1 port 1234'));
         }
 
         try {
@@ -144,7 +144,7 @@ class TeaTest extends TestCase
             // cannot be here
             self::assertTrue(false);
         } catch (\Exception $e) {
-            self::assertEquals('cURL error 7: Failed to connect to 127.0.0.1 port 1234: Connection refused (see https://curl.haxx.se/libcurl/c/libcurl-errors.html) for http://next.api.aliyun.com/', $e->getMessage());
+            self::assertTrue(0 === strpos($e->getMessage(), 'cURL error 7: Failed to connect to 127.0.0.1 port 1234'));
         }
     }
 }
