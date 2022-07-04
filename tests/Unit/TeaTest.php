@@ -19,6 +19,16 @@ class TeaTest extends TestCase
         $retryTimes = 2;
         self::assertFalse(Tea::allowRetry($runtime, $retryTimes, time()));
 
+        $runtime['maxAttempts'] = 1;
+        self::assertFalse(Tea::allowRetry($runtime, $retryTimes, time()));
+
+        $runtime['retryable'] = false;
+        self::assertFalse(Tea::allowRetry($runtime, $retryTimes, time()));
+
+        $runtime['retryable'] = true;
+        self::assertFalse(Tea::allowRetry($runtime, $retryTimes, time()));
+
+        $runtime['retryable'] = true;
         $runtime['maxAttempts'] = 3;
         self::assertTrue(Tea::allowRetry($runtime, $retryTimes, time()));
     }
