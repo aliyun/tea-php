@@ -173,7 +173,7 @@ class Tea
     public static function allowRetry(array $runtime, $retryTimes, $now)
     {
         unset($now);
-        if (empty($runtime) || !isset($runtime['maxAttempts'])) {
+        if (empty($runtime) || !isset($runtime['retryable']) || !$runtime['retryable'] || !isset($runtime['maxAttempts'])) {
             return false;
         }
         $maxAttempts = $runtime['maxAttempts'];
