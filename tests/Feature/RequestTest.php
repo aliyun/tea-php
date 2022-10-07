@@ -45,5 +45,14 @@ class RequestTest extends TestCase
         $res  = Tea::send($request);
         $data = json_decode((string) $res->getBody(), true);
         $this->assertEquals('this is body content', $data['data']);
+
+        $bytes = [];
+        for ($i = 0; $i < \strlen($data['data']); ++$i) {
+            $bytes[] = \ord($data['data'][$i]);
+        }
+        $request->body = $bytes;
+        $res  = Tea::send($request);
+        $data = json_decode((string) $res->getBody(), true);
+        $this->assertEquals('this is body content', $data['data']);
     }
 }
