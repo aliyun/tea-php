@@ -23,6 +23,24 @@ class HelperTest extends TestCase
         $this->assertFalse(Helper::isJson('not json string'));
     }
 
+    public function testIsBytes()
+    {
+        $this->assertTrue(Helper::isBytes([
+            115, 116, 114, 105, 110, 103,
+        ]));
+        $this->assertFalse(Helper::isBytes(['a' => 'b']));
+        $this->assertFalse(Helper::isBytes('not json string'));
+        $this->assertFalse(Helper::isBytes(true));
+        $this->assertFalse(Helper::isBytes(null));
+    }
+
+    public function testToString()
+    {
+        $this->assertEquals('string', Helper::toString([
+            115, 116, 114, 105, 110, 103,
+        ]));
+    }
+
     public function testMerge()
     {
         $data1 = [

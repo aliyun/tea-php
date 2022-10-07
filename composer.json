@@ -31,7 +31,7 @@
         "ext-simplexml": "*",
         "ext-xmlwriter": "*",
         "guzzlehttp/guzzle": "^6.3|^7.0",
-        "adbario/php-dot-notation": "^2.3"
+        "adbario/php-dot-notation": "^2.4"
     },
     "require-dev": {
         "symfony/dotenv": "^3.4",
