@@ -157,4 +157,37 @@ class TeaTest extends TestCase
             self::assertTrue(0 === strpos($e->getMessage(), 'cURL error 7: Failed to connect to 127.0.0.1 port 1234'));
         }
     }
+
+    public static function testTeaError()
+    {
+        $exception = new TeaError([
+            'data'    => [],
+            'message' => 'error message',
+        ], 'error message', '500');
+        self::assertEquals(500, $exception->getCode());
+        self::assertEquals([], $exception->data);
+        self::assertEquals('error message', $exception->message);
+
+        $exception = new TeaError([
+            'code'               => 'error code',
+            'message'            => 'error message',
+            'data'               => [
+                'statusCode'  => 200,
+                'description' => 'description'
+            ],
+            'description'        => 'error description',
+            'accessDeniedDetail' => [
+                'AuthAction'        => 'ram:ListUsers',
+                'AuthPrincipalType' => 'SubUser',
+                'PolicyType'        => 'ResourceGroupLevelIdentityBassdPolicy',
+                'NoPermissionType'  => 'ImplicitDeny'
+            ]
+        ]);
+        self::assertEquals('error code', $exception->getCode());
+        self::assertEquals('error message', $exception->message);
+        self::assertEquals(200, $exception->statusCode);
+        self::assertEquals(200, $exception->data['statusCode']);
+        self::assertEquals('error description', $exception->description);
+        self::assertEquals('ImplicitDeny', $exception->accessDeniedDetail['NoPermissionType']);
+    }
 }
