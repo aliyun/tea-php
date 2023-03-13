@@ -273,6 +273,9 @@ class Tea
         if (isset($config['noProxy']) && !empty($config['noProxy'])) {
             $options->set('proxy.no', $config['noProxy']);
         }
+        if (isset($config['ignoreSSL']) && !empty($config['ignoreSSL'])) {
+            $options->set('verify',!((bool)$config['ignoreSSL']));
+        }
         // readTimeout&connectTimeout unit is millisecond
         $read_timeout = isset($config['readTimeout']) && !empty($config['readTimeout']) ? (int) $config['readTimeout'] : 0;
         $con_timeout  = isset($config['connectTimeout']) && !empty($config['connectTimeout']) ? (int) $config['connectTimeout'] : 0;
