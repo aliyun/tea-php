@@ -7,10 +7,7 @@ use AlibabaCloud\Tea\Tea;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class RequestTest.
- *
  * @internal
- * @coversNothing
  */
 class RequestTest extends TestCase
 {

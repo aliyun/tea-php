@@ -9,7 +9,6 @@ use PHPUnit\Framework\TestCase;
  * Class RequestTest.
  *
  * @internal
- * @coversNothing
  */
 class RequestTest extends TestCase
 {
