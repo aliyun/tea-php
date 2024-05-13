@@ -7,7 +7,6 @@ use PHPUnit\Framework\TestCase;
  * Class ResponseTest.
  *
  * @internal
- * @coversNothing
  */
 class ResponseTest extends TestCase {
 	public static function testResponseInit() {
