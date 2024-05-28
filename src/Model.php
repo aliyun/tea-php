@@ -2,7 +2,7 @@
 
 namespace AlibabaCloud\Tea;
 
-class Model
+class Model extends \stdClass
 {
     protected $_name     = [];
     protected $_required = [];
