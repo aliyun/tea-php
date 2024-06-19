@@ -156,6 +156,7 @@ class TeaTest extends TestCase
             self::assertTrue(0 === strpos($e->getMessage(), 'cURL error 7: Failed to connect to 127.0.0.1 port 1234'));
         }
     }
+
     public static function testIgnoreSSL()
     {
         $request = new Request('GET', 'https://next.api.aliyun.com/home');

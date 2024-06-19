@@ -20,7 +20,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -29,7 +29,7 @@ jobs:
         extensions: mbstring, intl
         ini-values: post_max_size=256M, max_execution_time=180
         coverage: xdebug
-        tools: php-cs-fixer, phpunit
+        tools: php-cs-fixer, phpunit:11.2.0
 
     - name: Validate composer.json and composer.lock
       run: composer validate
@@ -39,8 +39,6 @@ jobs:
 
     - name: Run test case
       run: composer test
-      env:
-        XDEBUG_MODE: coverage
 
     - name: Upload Coverage Report
       uses: codecov/codecov-action@v4
