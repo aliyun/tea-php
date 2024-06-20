@@ -3,12 +3,12 @@
 namespace AlibabaCloud\Tea\Exception;
 
 /**
- * Class TeaRetryError.
+ * Class DaraRetryException
  */
-class TeaRetryError extends TeaError
+class DaraRespException extends DaraException
 {
     /**
-     * TeaRetryError constructor.
+     * DaraRetryException constructor.
      *
      * @param string          $message
      * @param int             $code

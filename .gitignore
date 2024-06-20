@@ -6,3 +6,4 @@ vendor
 .env
 cache
 /.phpunit.result.cache
+.phpunit.cache/
