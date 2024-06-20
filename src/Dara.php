@@ -1,12 +1,15 @@
 <?php
 
-namespace AlibabaCloud\Tea;
+namespace AlibabaCloud\Dara;
 
 use Adbar\Dot;
-use AlibabaCloud\Tea\Exception\TeaError;
+use AlibabaCloud\Dara\Exception\DaraException;
+use AlibabaCloud\Dara\RetryPolicy\RetryOptions;
+use AlibabaCloud\Dara\RetryPolicy\RetryPolicyContext;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\TransferStats;
@@ -14,15 +17,20 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 
+
+
 /**
- * Class Tea.
+ * Class Dara.
  */
-class Tea
+class Dara
 {
     /**
      * @var array
      */
     private static $config = [];
+
+    const MAX_DELAY_TIME = 120 * 1000;
+    const MIN_DELAY_TIME = 100;
 
     public static function config(array $config)
     {
@@ -41,7 +49,6 @@ class Tea
         }
 
         $config = self::resolveConfig($config);
-
         $res = self::client()->send(
             $request,
             $config
@@ -90,7 +97,6 @@ class Tea
         }
 
         $new_config = Helper::merge([self::$config, $config]);
-
         return new Client($new_config);
     }
 
@@ -217,7 +223,7 @@ class Tea
 
     public static function isRetryable($retry, $retryTimes = 0)
     {
-        if ($retry instanceof TeaError) {
+        if ($retry instanceof DaraException) {
             return true;
         }
         if (\is_array($retry)) {
@@ -227,6 +233,78 @@ class Tea
         }
 
         return false;
+    }
+
+
+    /**
+     * 
+     * @param RetryOptions $options
+     * @param RetryPolicyContext $optctxions
+     * @return bool
+     */
+    public static function shouldRetry($options, $ctx) {
+        if (!$options || !$options->getRetryable()) {
+            return false;
+        }
+    
+        $retriesAttempted = $ctx->getRetryCount();
+        $ex = $ctx->getException();
+        $conditions = $options->getNoRetryCondition();
+    
+        foreach ($conditions as $condition) {
+            if (in_array($ex->getName(), $condition->getException()) || in_array($ex->getErrCode(), $condition->getErrorCode())) {
+                return false;
+            }
+        }
+    
+        $conditions = $options->getRetryCondition();
+        foreach ($conditions as $condition) {
+            if (!in_array($ex->getName(), $condition->getException()) && !in_array($ex->getErrCode(), $condition->getErrorCode())) {
+                continue;
+            }
+            if ($retriesAttempted >= $condition->getMaxAttempts()) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 
+     * @param RetryOptions $options
+     * @param RetryPolicyContext $optctxions
+     * @return int
+     */
+    public static function getBackoffDelay($options, $ctx) {
+        $ex = $ctx->getException();
+        $fullClassName =  get_class($ex);
+        $classNameParts = explode('\\', $fullClassName);
+        $className = end($classNameParts);
+        $conditions = $options->getRetryCondition();
+        foreach ($conditions as $condition) {
+
+            if (!in_array($className, $condition->getException()) && !in_array($ex->getErrCode(), $condition->getErrorCode())) {
+                continue;
+            }
+    
+            $maxDelay = $condition->getMaxDelay() ?: self::MAX_DELAY_TIME;
+            $retryAfter = method_exists($ex, 'getRetryAfter') ? $ex->getRetryAfter() : null;
+    
+            if ($retryAfter !== null) {
+                return min($retryAfter, $maxDelay);
+            }
+            
+            
+            $backoff = $condition->getBackoff();
+            if (!isset($backoff) || null === $backoff) {
+                return self::MIN_DELAY_TIME;
+            }
+    
+            return min($backoff->getDelayTime($ctx), $maxDelay);
+        }
+    
+        return self::MIN_DELAY_TIME;
     }
 
     /**
@@ -276,9 +354,12 @@ class Tea
         if (isset($config['ignoreSSL']) && !empty($config['ignoreSSL'])) {
             $options->set('verify',!((bool)$config['ignoreSSL']));
         }
+        if (isset($config['stream']) && !empty($config['stream'])) {
+            $options->set(RequestOptions::STREAM, (bool)$config['stream']);
+        }
         // readTimeout&connectTimeout unit is millisecond
-        $read_timeout = isset($config['readTimeout']) && !empty($config['readTimeout']) ? (int) $config['readTimeout'] : 0;
-        $con_timeout  = isset($config['connectTimeout']) && !empty($config['connectTimeout']) ? (int) $config['connectTimeout'] : 0;
+        $read_timeout = isset($config['readTimeout']) && !empty($config['readTimeout']) ? (int) $config['readTimeout'] : 3000;
+        $con_timeout  = isset($config['connectTimeout']) && !empty($config['connectTimeout']) ? (int) $config['connectTimeout'] : 3000;
         // timeout unit is second
         $options->set('timeout', ($read_timeout + $con_timeout) / 1000);
 
