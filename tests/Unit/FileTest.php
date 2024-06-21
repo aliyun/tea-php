@@ -10,6 +10,8 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  * @coversNothing
+ * @method void setUp()
+ * @method void tearDown()
  */
 class FileTest extends TestCase
 {
@@ -19,8 +21,10 @@ class FileTest extends TestCase
     private $newFilePath;
     private $testFileContent = 'This is a test file';
     
-
-    protected function setUp()
+    /**
+     * @before
+     */
+    protected function initialize()
     {
         // 在测试前设置一个临时文件
         $this->testFilePath = tempnam(sys_get_temp_dir(), 'test');
@@ -33,9 +37,10 @@ class FileTest extends TestCase
         file_put_contents($this->newFilePath, '');
     }
 
-    
-
-    protected function tearDown()
+    /**
+     * @after
+     */
+    protected function cleanup()
     {
         if (file_exists($this->testFilePath)) {
             unlink($this->testFilePath);

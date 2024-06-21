@@ -198,12 +198,14 @@ class DaraTest extends TestCase
                 'NoPermissionType'  => 'ImplicitDeny'
             ]
         ]);
+        $data = $exception->getData();
+        $detail = $exception->getAccessDeniedDetail();
         self::assertEquals('error code', $exception->getErrCode());
         self::assertEquals('error message', $exception->getMessage());
         self::assertEquals(200, $exception->getStatusCode());
-        self::assertEquals(200, ($exception->getData())['statusCode']);
+        self::assertEquals(200, $data['statusCode']);
         self::assertEquals('error description', $exception->getDescription());
-        self::assertEquals('ImplicitDeny', ($exception->getAccessDeniedDetail())['NoPermissionType']);
+        self::assertEquals('ImplicitDeny', $detail['NoPermissionType']);
     }
 
     public function testRuntimeOptions()
