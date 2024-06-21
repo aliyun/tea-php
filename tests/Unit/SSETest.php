@@ -15,28 +15,35 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  * @coversNothing
+ * @method void setUpBeforeClass()
+ * @method void tearDownAfterClass()
  */
 class SSETest extends TestCase
 {
     /**
      * @var resource
      */
-    private $serverProcess;
+    private $pid = 0;
 
-    protected function setUp()
+    /**
+     * @before
+     */
+    protected function initialize()
     {
         $server = dirname(__DIR__) . \DIRECTORY_SEPARATOR . 'Mock' . \DIRECTORY_SEPARATOR . 'SSEServer.php';
         $command = "php -S localhost:8000 $server > /dev/null 2>&1 & echo $!";
         // $command = "php -S localhost:8000 $server";
-        
-        $this->serverProcess = popen($command, 'r');
+        $output = shell_exec($command);
+        $this->pid = (int)trim($output);
         sleep(1);
-
     }
 
-    protected function tearDown()
+    /**
+     * @after
+     */
+    protected function cleanup()
     {
-        pclose($this->serverProcess);
+        shell_exec('kill '.$this->pid);
     }
 
     public function testSSE()
@@ -64,7 +71,7 @@ class SSETest extends TestCase
             self::assertEquals($event->retry, 3000);
         }
 
-        self::assertEquals(count($ret), 5);
+        self::assertEquals(\count($ret), 5);
     }
 
     public function testSSEWithoutSpace()
@@ -92,7 +99,7 @@ class SSETest extends TestCase
             self::assertEquals($event->retry, 3000);
         }
 
-        self::assertEquals(count($ret), 5);
+        self::assertEquals(\count($ret), 5);
     }
 
     public function testSSEWithInvalidRetry()
@@ -120,7 +127,7 @@ class SSETest extends TestCase
             self::assertEquals($event->retry, null);
         }
 
-        self::assertEquals(count($ret), 5);
+        self::assertEquals(\count($ret), 5);
     }
 
     public function testSSEWithDivided()
@@ -155,6 +162,6 @@ class SSETest extends TestCase
             self::assertEquals($event->retry, 3000);
         }
 
-        self::assertEquals(count($ret), 4);
+        self::assertEquals(\count($ret), 4);
     }
 }

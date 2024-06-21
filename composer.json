@@ -31,13 +31,13 @@
         "ext-simplexml": "*",
         "ext-xmlwriter": "*",
         "guzzlehttp/guzzle": "^6.3|^7.0",
-        "psr/http-message": "^1.1",
+        "psr/http-message": "^0.11.0|^1.0",
         "adbario/php-dot-notation": "^2.4",
         "monolog/monolog": "^1.0|^2.1"
     },
     "require-dev": {
         "symfony/dotenv": "^3.4",
-        "phpunit/phpunit": "^4.8.35|^5.4.3",
+        "phpunit/phpunit": "^4.8.35|^5.4.3|^9.3",
         "symfony/var-dumper": "^3.4"
     },
     "suggest": {

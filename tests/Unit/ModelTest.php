@@ -140,10 +140,11 @@ class ModelTest extends TestCase
             'accessKeyId' => '123456',
             'accessKeySecret' => 30
         ])];
-        Model::validateArray($ma);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('accessKeyId is required');
+
+        Model::validateArray($ma);
     }
 
     /**
@@ -159,8 +160,11 @@ class ModelTest extends TestCase
             'accessKeyId' => '1234',
             'accessKeySecret' => 30
         ])];
-        Model::validateArray($ma);
 
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('accessKeyId is less than min-length: 5');
+
+        Model::validateArray($ma);
     }
 
     /**
@@ -176,8 +180,11 @@ class ModelTest extends TestCase
             'accessKeyId' => '1234',
             'accessKeySecret' => 30
         ])];
-        Model::validateArray($ma);
 
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('accessKeyId is exceed max-length: 10');
+
+        Model::validateArray($ma);
     }
 
     /**
@@ -193,6 +200,10 @@ class ModelTest extends TestCase
             'accessKeyId' => '123456',
             'accessKeySecret' => 30
         ])];
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('accessKeySecret cannot be greater than 50');
+
         Model::validateArray($ma);
     }
 
@@ -209,6 +220,10 @@ class ModelTest extends TestCase
             'accessKeyId' => '123456',
             'accessKeySecret' => 3
         ])];
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('accessKeySecret cannot be less than 10');
+
         Model::validateArray($ma);
     }
 }

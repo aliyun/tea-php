@@ -48,10 +48,13 @@ class StreamUtil
 
     private static function tryGetEvents($head, $chunk) {
         $all = $head . $chunk;
+        if(empty($all)) {
+            return [];
+        }
         $start = 0;
         $events = [];
-        $event = new SSEEvent();
         $lines = explode("\n", $all);
+        $event = new SSEEvent();
         for ($i = 0; $i < strlen($all) - 1; $i++) {
             $c = $all[$i];
             $c2 = $all[$i + 1];
@@ -59,9 +62,10 @@ class StreamUtil
                 $part = substr($all, $start, $i - $start);
                 $lines = explode("\n", $part);
                 $event = new SSEEvent();
+                
                 foreach ($lines as $line) {
                     if ('' === trim($line)) {
-                        
+                        continue;
                     } elseif (0 === strpos($line, 'data:')) {
                         $data = substr($line, 5);
                         $event->data .= trim($data);
@@ -100,6 +104,9 @@ class StreamUtil
         while (!$stream->eof()) {
             $chunk = $stream->read(4096); 
             $result = self::tryGetEvents($rest, $chunk);
+            if(empty($result)) {
+                continue;
+            }
             $events = $result['events'];
             $rest = $result['remain'];
 
@@ -109,7 +116,7 @@ class StreamUtil
         }
 
         // If there is any remaining data that qualifies as an event, yield it as well
-        if ($rest !== '') {
+        if ($rest !== '' && $rest !== false) {
             $lastEvent = new SSEEvent();
             $lastEvent->data = $rest;
             yield $lastEvent;
