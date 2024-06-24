@@ -5,15 +5,15 @@ namespace AlibabaCloud\Tea\Exception;
 use AlibabaCloud\Tea\Request;
 
 /**
- * Class TeaUnableRetryError.
+ * Class DaraUnableRetryException.
  */
-class TeaUnableRetryError extends TeaError
+class DaraUnableRetryException extends DaraException
 {
     private $lastRequest;
     private $lastException;
 
     /**
-     * TeaUnableRetryError constructor.
+     * DaraUnableRetryException constructor.
      *
      * @param Request         $lastRequest
      * @param null|\Exception $lastException

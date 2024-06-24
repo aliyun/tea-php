@@ -1,6 +1,6 @@
 <?php
 
-namespace AlibabaCloud\Tea;
+namespace AlibabaCloud\Dara;
 
 use Adbar\Dot;
 use ArrayAccess;
@@ -10,6 +10,7 @@ use GuzzleHttp\TransferStats;
 use IteratorAggregate;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use AlibabaCloud\Dara\Util\StringUtil;
 
 /**
  * Class Response.
@@ -53,6 +54,12 @@ class Response extends PsrResponse implements ArrayAccess, IteratorAggregate, Co
         $this->statusCode = $response->getStatusCode();
         if ($this->body->isSeekable()) {
             $this->body->seek(0);
+        }
+
+
+        if(isset($this->headers['Content-type']) && isset($this->headers['Content-type'][0])
+        && StringUtil::hasPrefix($this->headers['Content-type'][0], 'text/event-stream')) {
+            return;
         }
 
         if (Helper::isJson((string) $this->getBody())) {
