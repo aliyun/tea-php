@@ -1,6 +1,6 @@
 <?php
 
-namespace AlibabaCloud\Tea;
+namespace AlibabaCloud\Dara;
 
 class Model
 {
@@ -52,6 +52,16 @@ class Model
         }
     }
 
+    public function copyWithoutStream() {
+        $map = $this->toArray(true);
+        $calledClass = get_called_class();
+        
+        if (method_exists($calledClass, 'fromMap')) {
+            return $calledClass::fromMap($map);
+        }
+        return null;
+    }
+
     public static function validateRequired($fieldName, $field, $val = null)
     {
         if (true === $val && null === $field) {
@@ -91,6 +101,20 @@ class Model
     {
         if (null !== $field && $field < $val) {
             throw new \InvalidArgumentException($fieldName . ' cannot be less than ' . $val);
+        }
+    }
+
+    public static function validateArray($arr)
+    {
+        if (null === $arr) {
+            return;
+        }
+        foreach($arr as $item) {
+            if($item instanceof Model) {
+                $item->validate();
+            } else if(is_array($item)){
+                self::validateArray($item);
+            }
         }
     }
 

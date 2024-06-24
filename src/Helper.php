@@ -1,6 +1,6 @@
 <?php
 
-namespace AlibabaCloud\Tea;
+namespace AlibabaCloud\Dara;
 
 class Helper
 {
