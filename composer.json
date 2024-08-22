@@ -62,13 +62,9 @@
         "cs": "phpcs --standard=PSR2 -n ./",
         "cbf": "phpcbf --standard=PSR2 -n ./",
         "fixer": "php-cs-fixer fix ./",
-        "test": [
-            "@clearCache",
-            "XDEBUG_MODE=coverage phpunit --colors=always"
-        ],
         "unit": [
             "@clearCache",
-            "phpunit --testsuite=Unit --colors=always"
+            "XDEBUG_MODE=coverage phpunit --testsuite=Unit --colors=always --coverage-xml ./coverage/xml --coverage-html ./coverage/html --coverage-clover ./coverage/coverage.clover"
         ],
         "feature": [
             "@clearCache",
