@@ -124,30 +124,59 @@ class StreamUtil
     }
 
     /**
-     * @param mixin $str
+     * Create and return a Guzzle Stream from various inputs.
      *
-     * @return bool
+     * @param mixed $str  string|resource|callable|\GuzzleHttp\Psr7\Stream|object
+     * @return Stream
+     * @throws \InvalidArgumentException|\RuntimeException
      */
     public static function streamFor($str)
     {
-        if (!\is_array($value)) {
-            return false;
-        }
-        $i = 0;
-        foreach ($value as $k => $ord) {
-            if ($k !== $i) {
-                return false;
-            }
-            if (!\is_int($ord)) {
-                return false;
-            }
-            if ($ord < 0 || $ord > 255) {
-                return false;
-            }
-            ++$i;
+        if (!class_exists('\GuzzleHttp\Psr7\Stream')) {
+            throw new \RuntimeException('guzzlehttp/psr7 is required for streamFor');
         }
 
-        return true;
+        // Already a Guzzle Stream
+        if ($str instanceof Stream) {
+            return $str;
+        }
+
+        // If callable, call and recurse
+        if (is_callable($str)) {
+            return self::streamFor($str());
+        }
+
+        // If resource (stream), wrap directly
+        if (is_resource($str)) {
+            if (get_resource_type($str) !== 'stream') {
+                throw new \InvalidArgumentException('Provided resource is not a stream');
+            }
+            return new Stream($str);
+        }
+
+        // If object with __toString, cast it
+        if (is_object($str) && method_exists($str, '__toString')) {
+            $str = (string)$str;
+        }
+
+        // Must be string (or scalar convertible)
+        if (!is_string($str) && !is_scalar($str) && !is_null($str)) {
+            throw new \InvalidArgumentException('Unsupported type for streamFor: ' . gettype($str));
+        }
+
+        $content = $str === null ? '' : (string)$str;
+
+        $resource = @fopen('php://temp', 'w+b');
+        if ($resource === false) {
+            throw new \RuntimeException('Failed to open temporary stream');
+        }
+
+        if ($content !== '') {
+            fwrite($resource, $content);
+            rewind($resource);
+        }
+
+        return new Stream($resource);
     }
     
 }
