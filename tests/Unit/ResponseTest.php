@@ -1,7 +1,7 @@
 <?php
-namespace AlibabaCloud\Tea\Tests\Unit;
+namespace AlibabaCloud\Dara\Tests\Unit;
 use GuzzleHttp\Psr7\Response as PsrResponse;
-use AlibabaCloud\Tea\Response;
+use AlibabaCloud\Dara\Response;
 use PHPUnit\Framework\TestCase;
 /**
  * Class ResponseTest.

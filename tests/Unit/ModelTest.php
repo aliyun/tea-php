@@ -1,8 +1,8 @@
 <?php
 
-namespace AlibabaCloud\Tea\Tests\Unit;
+namespace AlibabaCloud\Dara\Tests\Unit;
 
-use AlibabaCloud\Tea\Model;
+use AlibabaCloud\Dara\Model;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -112,24 +112,135 @@ class ModelTest extends TestCase
         $this->expectExceptionMessage('FieldName cannot be less than 101');
         Model::validateMinimum('FieldName', 100, 101);
     }
+
+    public function testValidateArray()
+    {
+        Model::validateArray(['FieldName', 100, 99]);
+        $this->assertTrue(true);
+        $ma = [new Config([
+            'accessKeyId' => '123456'
+        ]), new Config([
+            'accessKeyId' => '123456',
+            'accessKeySecret' => 30
+        ])];
+        Model::validateArray($ma);
+        $this->assertTrue(true);
+
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage accessKeyId is required
+     * @throws InvalidArgumentException
+     */
+    public function testValidateArrayErr1() {
+        $ma = [new Config([
+            'accessKeySecret' => 40
+        ]), new Config([
+            'accessKeyId' => '123456',
+            'accessKeySecret' => 30
+        ])];
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('accessKeyId is required');
+
+        Model::validateArray($ma);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage accessKeyId is less than min-length: 5
+     * @throws InvalidArgumentException
+     */
+    public function testValidateArrayErr2() {
+        $ma = [new Config([
+            'accessKeyId' => '123456',
+            'accessKeySecret' => 40
+        ]), new Config([
+            'accessKeyId' => '1234',
+            'accessKeySecret' => 30
+        ])];
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('accessKeyId is less than min-length: 5');
+
+        Model::validateArray($ma);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage accessKeyId is exceed max-length: 10
+     * @throws InvalidArgumentException
+     */
+    public function testValidateArrayErr3() {
+        $ma = [new Config([
+            'accessKeyId' => '12345678901',
+            'accessKeySecret' => 40
+        ]), new Config([
+            'accessKeyId' => '1234',
+            'accessKeySecret' => 30
+        ])];
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('accessKeyId is exceed max-length: 10');
+
+        Model::validateArray($ma);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage accessKeySecret cannot be greater than 50
+     * @throws InvalidArgumentException
+     */
+    public function testValidateArrayErr4() {
+        $ma = [new Config([
+            'accessKeyId' => '123456',
+            'accessKeySecret' => 60
+        ]), new Config([
+            'accessKeyId' => '123456',
+            'accessKeySecret' => 30
+        ])];
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('accessKeySecret cannot be greater than 50');
+
+        Model::validateArray($ma);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage accessKeySecret cannot be less than 10
+     * @throws InvalidArgumentException
+     */
+    public function testValidateArrayErr5() {
+        $ma = [new Config([
+            'accessKeyId' => '123456',
+            'accessKeySecret' => 20
+        ]), new Config([
+            'accessKeyId' => '123456',
+            'accessKeySecret' => 3
+        ])];
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('accessKeySecret cannot be less than 10');
+
+        Model::validateArray($ma);
+    }
 }
 
 class Config extends Model
 {
     public $accessKeyId;
     public $accessKeySecret;
-}
 
-class ModelMock extends Model
-{
-    public $a = 'a';
-    public $b = 'b';
-    public $c = '';
-
-    public function __construct()
+    public function validate()
     {
-        $this->_name['a']     = 'A';
-        $this->_required['c'] = true;
-        parent::__construct();
+        Model::validateRequired('accessKeyId', $this->accessKeyId, true);
+        Model::validateMinLength('accessKeyId', $this->accessKeyId, 5);
+        Model::validateMaxLength('accessKeyId', $this->accessKeyId, 10);
+        Model::validateMinimum('accessKeySecret', $this->accessKeySecret, 10);
+        Model::validateMaximum('accessKeySecret', $this->accessKeySecret, 50);
+
+        parent::validate();
     }
 }

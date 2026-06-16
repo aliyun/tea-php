@@ -1,8 +1,8 @@
 <?php
 
-namespace AlibabaCloud\Tea\Tests\Unit;
+namespace AlibabaCloud\Dara\Tests\Unit;
 
-use AlibabaCloud\Tea\Request;
+use AlibabaCloud\Dara\Request;
 use PHPUnit\Framework\TestCase;
 
 /**

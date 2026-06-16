@@ -1,9 +1,9 @@
 <?php
 
-namespace AlibabaCloud\Tea\Tests\Feature;
+namespace AlibabaCloud\Dara\Tests\Feature;
 
-use AlibabaCloud\Tea\Request;
-use AlibabaCloud\Tea\Tea;
+use AlibabaCloud\Dara\Request;
+use AlibabaCloud\Dara\Dara;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -20,13 +20,15 @@ class RequestTest extends TestCase
             'a' => 'a',
             'b' => 'b',
         ];
-        $result                   = Tea::send($request);
+        $result                   = Dara::send($request, [
+            'readTimeout' => 300000
+        ]);
         self::assertEquals(200, $result->getStatusCode());
     }
 
     public function testString()
     {
-        $string = Tea::string('get', 'http://www.alibabacloud.com/');
+        $string = Dara::string('get', 'http://www.alibabacloud.com/');
         self::assertNotFalse(strpos($string, '<link rel="dns-prefetch" href="//g.alicdn.com">'));
     }
 
@@ -39,7 +41,7 @@ class RequestTest extends TestCase
         $request->body            = 'this is body content';
         $request->pathname        = '/post';
 
-        $res  = Tea::send($request);
+        $res  = Dara::send($request);
         $data = json_decode((string) $res->getBody(), true);
         $this->assertEquals('this is body content', $data['data']);
 
@@ -48,7 +50,7 @@ class RequestTest extends TestCase
             $bytes[] = \ord($data['data'][$i]);
         }
         $request->body = $bytes;
-        $res  = Tea::send($request);
+        $res  = Dara::send($request);
         $data = json_decode((string) $res->getBody(), true);
         $this->assertEquals('this is body content', $data['data']);
     }

@@ -1,46 +1,60 @@
 <?php
 
-namespace AlibabaCloud\Tea\Exception;
+namespace AlibabaCloud\Dara\Exception;
 
-use RuntimeException;
+use AlibabaCloud\Tea\Exception\TeaError;
 
 /**
- * Class TeaError.
+ * Class DaraException.
  */
-class TeaError extends RuntimeException
+class DaraException extends TeaError
 {
     public $message = '';
-    public $code    = 0;
+    public $errCode = '';
     public $data;
     public $name    = '';
     public $statusCode;
     public $description;
     public $accessDeniedDetail;
-    private $errorInfo;
+    public $errorInfo;
 
     /**
-     * TeaError constructor.
+     * DaraError DaraException.
      *
      * @param array           $errorInfo
      * @param string          $message
      * @param int             $code
      * @param null|\Throwable $previous
      */
-    public function __construct($errorInfo = [], $message = '', $code = 0, $previous = null)
+    public function __construct($errorInfo = [], $message = '', $code = '', $previous = null)
     {
-        parent::__construct((string) $message, (int) $code, $previous);
+        parent::__construct($errorInfo, $message, $code, $previous);
         $this->errorInfo = $errorInfo;
+        $this->name = 'BaseError';
         if (!empty($errorInfo)) {
-            $properties = ['name', 'message', 'code', 'data', 'description', 'accessDeniedDetail'];
+            $properties = ['name', 'message', 'errCode', 'data', 'description', 'accessDeniedDetail'];
             foreach ($properties as $property) {
                 if (isset($errorInfo[$property])) {
                     $this->{$property} = $errorInfo[$property];
-                    if ($property === 'data' && isset($errorInfo['data']['statusCode'])) {
-                        $this->statusCode = $errorInfo['data']['statusCode'];
-                    }
                 }
             }
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getErrCode()
+    {
+        return $this->errCode;
     }
 
     /**
