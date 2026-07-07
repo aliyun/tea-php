@@ -35,7 +35,6 @@ class RuntimeOptions extends Model {
         'webSocketMaxReconnectTimes' => 'webSocketMaxReconnectTimes',
         'webSocketWriteTimeout' => 'webSocketWriteTimeout',
         'webSocketHandshakeTimeout' => 'webSocketHandshakeTimeout',
-        'websocketSubProtocol' => 'websocketSubProtocol',
     ];
     public function validate() {}
     public function toMap() {
@@ -117,9 +116,6 @@ class RuntimeOptions extends Model {
         }
         if (null !== $this->webSocketHandshakeTimeout) {
             $res['webSocketHandshakeTimeout'] = $this->webSocketHandshakeTimeout;
-        }
-        if (null !== $this->websocketSubProtocol) {
-            $res['websocketSubProtocol'] = $this->websocketSubProtocol;
         }
         return $res;
     }
@@ -206,9 +202,6 @@ class RuntimeOptions extends Model {
         }
         if(isset($map['webSocketHandshakeTimeout'])){
             $model->webSocketHandshakeTimeout = $map['webSocketHandshakeTimeout'];
-        }
-        if(isset($map['websocketSubProtocol'])){
-            $model->websocketSubProtocol = $map['websocketSubProtocol'];
         }
         return $model;
     }
@@ -374,10 +367,6 @@ class RuntimeOptions extends Model {
      */
     public $webSocketHandler;
 
-    /**
-     * @description WebSocket sub-protocol (awap or general)
-     * @var string
-     */
-    public $websocketSubProtocol;
+    public $webSocketHandshakeTimeout;
 
 }

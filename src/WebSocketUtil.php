@@ -68,11 +68,6 @@ class WebSocketUtil
         return null;
     }
 
-    public static function getWebsocketSubProtocol($runtime)
-    {
-        return self::getRuntimeValue($runtime, 'websocketSubProtocol');
-    }
-
     /**
      * @param array $headers
      *
