@@ -67,9 +67,6 @@ class DefaultWebSocketClient implements WebSocketClientInterface
     /** @var int */
     private $maxReconnectTimes = 5;
 
-    /** @var string|null */
-    private $websocketSubProtocol;
-
     /** @var Response|null */
     private $handshakeResponse;
 
@@ -105,7 +102,6 @@ class DefaultWebSocketClient implements WebSocketClientInterface
         $this->request = $request;
         $this->runtimeObject = $runtimeObject;
         $this->updateTimeoutConfig($runtimeObject);
-        $this->websocketSubProtocol = WebSocketUtil::getWebsocketSubProtocol($runtimeObject);
         $this->state = self::STATE_CONNECTING;
         $this->stopped = false;
 
@@ -135,16 +131,10 @@ class DefaultWebSocketClient implements WebSocketClientInterface
             }
         }
 
-        $subProtocols = [];
-        if ($this->websocketSubProtocol !== null && $this->websocketSubProtocol !== '') {
-            $headers['Sec-WebSocket-Protocol'] = $this->websocketSubProtocol;
-            $subProtocols = [$this->websocketSubProtocol];
-        }
-
         try {
             $timeoutSeconds = max($connectTimeout, $handshakeTimeout) / 1000;
             /** @var WebSocket $conn */
-            $conn = Block\await($connector($requestURL, $subProtocols, $headers), $this->loop, $timeoutSeconds);
+            $conn = Block\await($connector($requestURL, [], $headers), $this->loop, $timeoutSeconds);
             $this->conn = $conn;
             $this->state = self::STATE_CONNECTED;
             $this->setupConnectionHandlers($conn);
