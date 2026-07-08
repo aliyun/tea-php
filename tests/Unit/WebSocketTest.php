@@ -237,4 +237,31 @@ class WebSocketTest extends TestCase
         $client->reconnect();
         $client->close();
     }
+
+    public function testDefaultWebSocketClientReceivesMessagesInMainProcess()
+    {
+        $handler = new MockWebSocketHandler();
+        $client = WebSocketUtil::newDefaultWebSocketClient($handler);
+        $request = new Request();
+        $request->protocol = 'ws';
+        $request->pathname = '/';
+        $request->headers = ['host' => '127.0.0.1:' . $this->port];
+
+        $runtimeObject = [
+            'connectTimeout' => 5000,
+            'readTimeout' => 30000,
+            'webSocketPingInterval' => 0,
+            'webSocketEnableReconnect' => false,
+        ];
+
+        $client->connect($request, $runtimeObject);
+        self::assertTrue($client->isConnected());
+
+        $client->sendText('hello websocket');
+        $client->pump(1000);
+
+        self::assertSame(1, $handler->messageReceivedCount);
+        self::assertSame('hello websocket', $handler->lastMessage->payload);
+        $client->disconnect();
+    }
 }

@@ -70,9 +70,6 @@ class DefaultWebSocketClient implements WebSocketClientInterface
     /** @var Response|null */
     private $handshakeResponse;
 
-    /** @var int|null */
-    private $loopPid;
-
     /** @var bool */
     private $reconnecting = false;
 
@@ -139,7 +136,6 @@ class DefaultWebSocketClient implements WebSocketClientInterface
             $this->state = self::STATE_CONNECTED;
             $this->setupConnectionHandlers($conn);
             $this->createSessionInfo($conn);
-            $this->startBackgroundLoop();
             if ($this->pingInterval > 0) {
                 $this->startPingPong();
             }
@@ -183,6 +179,7 @@ class DefaultWebSocketClient implements WebSocketClientInterface
             throw new Exception('connection is nil');
         }
         $this->conn->send($text);
+        $this->pump();
     }
 
     public function sendBinary($data)
@@ -195,6 +192,26 @@ class DefaultWebSocketClient implements WebSocketClientInterface
         }
         $frame = new \Ratchet\RFC6455\Messaging\Frame($data, true, \Ratchet\RFC6455\Messaging\Frame::OP_BINARY);
         $this->conn->send($frame);
+        $this->pump();
+    }
+
+    public function pump($timeoutMs = 100)
+    {
+        if ($this->loop === null || $this->stopped) {
+            return;
+        }
+        if ($timeoutMs <= 0) {
+            $timeoutMs = 100;
+        }
+
+        $stopTimer = $this->loop->addTimer($timeoutMs / 1000, function () {
+            $this->loop->stop();
+        });
+        try {
+            $this->loop->run();
+        } finally {
+            $this->loop->cancelTimer($stopTimer);
+        }
     }
 
     public function getSessionInfo()
@@ -397,27 +414,6 @@ class DefaultWebSocketClient implements WebSocketClientInterface
         );
     }
 
-    private function startBackgroundLoop()
-    {
-        if (!function_exists('pcntl_fork')) {
-            $this->loop->run();
-
-            return;
-        }
-
-        $pid = pcntl_fork();
-        if ($pid === -1) {
-            $this->loop->run();
-
-            return;
-        }
-        if ($pid === 0) {
-            $this->loop->run();
-            exit(0);
-        }
-        $this->loopPid = $pid;
-    }
-
     private function startPingPong()
     {
         if ($this->pingInterval <= 0 || $this->loop === null) {
@@ -549,7 +545,7 @@ class DefaultWebSocketClient implements WebSocketClientInterface
 
     private function disconnectInternal($code, $reason)
     {
-        if ($this->state === self::STATE_DISCONNECTED && $this->loopPid === null && $this->loop === null) {
+        if ($this->state === self::STATE_DISCONNECTED && $this->loop === null) {
             return;
         }
 
@@ -585,14 +581,6 @@ class DefaultWebSocketClient implements WebSocketClientInterface
             } catch (Exception $e) {
                 // ignore
             }
-        }
-
-        if ($this->loopPid !== null && function_exists('posix_kill')) {
-            posix_kill($this->loopPid, SIGTERM);
-            if (function_exists('pcntl_waitpid')) {
-                pcntl_waitpid($this->loopPid, $status, WNOHANG);
-            }
-            $this->loopPid = null;
         }
 
         $this->loop = null;

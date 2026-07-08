@@ -52,6 +52,13 @@ interface WebSocketClientInterface
     public function getSessionInfo();
 
     /**
+     * @param int $timeoutMs
+     *
+     * @return void
+     */
+    public function pump($timeoutMs = 100);
+
+    /**
      * @return void
      */
     public function close();

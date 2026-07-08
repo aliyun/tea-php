@@ -46,7 +46,6 @@
         "symfony/var-dumper": "^3.4"
     },
     "suggest": {
-        "ext-pcntl": "To use WebSocket background message loop",
         "ext-sockets": "To use client-side monitoring"
     },
     "autoload": {
