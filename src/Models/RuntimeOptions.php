@@ -367,6 +367,4 @@ class RuntimeOptions extends Model {
      */
     public $webSocketHandler;
 
-    public $webSocketHandshakeTimeout;
-
 }
