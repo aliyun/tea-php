@@ -63,9 +63,13 @@ class WebSocketTest extends TestCase
     /** @var int */
     private $port = 18080;
 
-    protected function setUp(): void
+    /**
+     * @before
+     */
+    protected function startMockServer()
     {
-        $this->port = 18080 + random_int(1, 1000);
+        // Avoid `: void` / random_int() so PHP 5.6 / 7.0 CI matrix stays compatible.
+        $this->port = 18080 + mt_rand(1, 1000);
         $server = dirname(__DIR__) . '/Mock/WebSocketServer.php';
         $command = sprintf('php %s %d > /dev/null 2>&1 & echo $!', escapeshellarg($server), $this->port);
         $output = shell_exec($command);
@@ -73,10 +77,14 @@ class WebSocketTest extends TestCase
         usleep(300000);
     }
 
-    protected function tearDown(): void
+    /**
+     * @after
+     */
+    protected function stopMockServer()
     {
         if ($this->pid > 0) {
             shell_exec('kill ' . $this->pid);
+            $this->pid = 0;
         }
     }
 

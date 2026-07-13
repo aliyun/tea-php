@@ -16,7 +16,13 @@ class StreamTest extends TestCase
 
     public function getStream()
     {
-        return new Stream(fopen('http://httpbin.org/get', 'r'));
+        // Use an in-memory JSON payload instead of httpbin.org (external flaky dependency).
+        $payload = '{"url":"http://httpbin.org/get","args":{}}';
+        $resource = fopen('php://memory', 'r+');
+        fwrite($resource, $payload);
+        rewind($resource);
+
+        return new Stream($resource);
     }
 
     public function testReadAsBytes()
