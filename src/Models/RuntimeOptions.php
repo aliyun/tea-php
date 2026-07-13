@@ -28,6 +28,13 @@ class RuntimeOptions extends Model {
         'socks5Proxy' => 'socks5Proxy',
         'socks5NetWork' => 'socks5NetWork',
         'keepAlive' => 'keepAlive',
+        'webSocketPingInterval' => 'webSocketPingInterval',
+        'webSocketPongTimeout' => 'webSocketPongTimeout',
+        'webSocketEnableReconnect' => 'webSocketEnableReconnect',
+        'webSocketReconnectInterval' => 'webSocketReconnectInterval',
+        'webSocketMaxReconnectTimes' => 'webSocketMaxReconnectTimes',
+        'webSocketWriteTimeout' => 'webSocketWriteTimeout',
+        'webSocketHandshakeTimeout' => 'webSocketHandshakeTimeout',
     ];
     public function validate() {}
     public function toMap() {
@@ -88,6 +95,27 @@ class RuntimeOptions extends Model {
         }
         if (null !== $this->extendsParameters) {
             $res['extendsParameters'] = null !== $this->extendsParameters ? $this->extendsParameters->toMap() : null;
+        }
+        if (null !== $this->webSocketPingInterval) {
+            $res['webSocketPingInterval'] = $this->webSocketPingInterval;
+        }
+        if (null !== $this->webSocketPongTimeout) {
+            $res['webSocketPongTimeout'] = $this->webSocketPongTimeout;
+        }
+        if (null !== $this->webSocketEnableReconnect) {
+            $res['webSocketEnableReconnect'] = $this->webSocketEnableReconnect;
+        }
+        if (null !== $this->webSocketReconnectInterval) {
+            $res['webSocketReconnectInterval'] = $this->webSocketReconnectInterval;
+        }
+        if (null !== $this->webSocketMaxReconnectTimes) {
+            $res['webSocketMaxReconnectTimes'] = $this->webSocketMaxReconnectTimes;
+        }
+        if (null !== $this->webSocketWriteTimeout) {
+            $res['webSocketWriteTimeout'] = $this->webSocketWriteTimeout;
+        }
+        if (null !== $this->webSocketHandshakeTimeout) {
+            $res['webSocketHandshakeTimeout'] = $this->webSocketHandshakeTimeout;
         }
         return $res;
     }
@@ -153,6 +181,27 @@ class RuntimeOptions extends Model {
         }
         if(isset($map['extendsParameters'])){
             $model->extendsParameters = ExtendsParameters::fromMap($map['extendsParameters']);
+        }
+        if(isset($map['webSocketPingInterval'])){
+            $model->webSocketPingInterval = $map['webSocketPingInterval'];
+        }
+        if(isset($map['webSocketPongTimeout'])){
+            $model->webSocketPongTimeout = $map['webSocketPongTimeout'];
+        }
+        if(isset($map['webSocketEnableReconnect'])){
+            $model->webSocketEnableReconnect = $map['webSocketEnableReconnect'];
+        }
+        if(isset($map['webSocketReconnectInterval'])){
+            $model->webSocketReconnectInterval = $map['webSocketReconnectInterval'];
+        }
+        if(isset($map['webSocketMaxReconnectTimes'])){
+            $model->webSocketMaxReconnectTimes = $map['webSocketMaxReconnectTimes'];
+        }
+        if(isset($map['webSocketWriteTimeout'])){
+            $model->webSocketWriteTimeout = $map['webSocketWriteTimeout'];
+        }
+        if(isset($map['webSocketHandshakeTimeout'])){
+            $model->webSocketHandshakeTimeout = $map['webSocketHandshakeTimeout'];
         }
         return $model;
     }
@@ -269,5 +318,53 @@ class RuntimeOptions extends Model {
      * @var ExtendsParameters
      */
     public $extendsParameters;
+
+    /**
+     * @description WebSocket ping interval in milliseconds
+     * @var int
+     */
+    public $webSocketPingInterval;
+
+    /**
+     * @description WebSocket pong timeout in milliseconds
+     * @var int
+     */
+    public $webSocketPongTimeout;
+
+    /**
+     * @description whether to enable WebSocket reconnect
+     * @var bool
+     */
+    public $webSocketEnableReconnect;
+
+    /**
+     * @description WebSocket reconnect interval in milliseconds
+     * @var int
+     */
+    public $webSocketReconnectInterval;
+
+    /**
+     * @description maximum WebSocket reconnect times
+     * @var int
+     */
+    public $webSocketMaxReconnectTimes;
+
+    /**
+     * @description WebSocket write timeout in milliseconds
+     * @var int
+     */
+    public $webSocketWriteTimeout;
+
+    /**
+     * @description WebSocket handshake timeout in milliseconds
+     * @var int
+     */
+    public $webSocketHandshakeTimeout;
+
+    /**
+     * @description WebSocket handler (not serialized)
+     * @var WebSocketHandler
+     */
+    public $webSocketHandler;
 
 }
