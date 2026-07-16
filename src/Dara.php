@@ -282,13 +282,12 @@ class Dara
      */
     public static function getBackoffDelay($options, $ctx) {
         $ex = $ctx->getException();
-        $fullClassName = get_class($ex);
-        $classNameParts = explode('\\', $fullClassName);
-        $className = end($classNameParts);
+        // Match exception by logical name (same as shouldRetry), not PHP class basename.
+        // e.g. DaraRespException::getName() => 'ResponseError'
         $conditions = $options->getRetryCondition();
         foreach ($conditions as $condition) {
 
-            if (!in_array($className, $condition->getException()) && !in_array($ex->getErrCode(), $condition->getErrorCode())) {
+            if (!in_array($ex->getName(), $condition->getException()) && !in_array($ex->getErrCode(), $condition->getErrorCode())) {
                 continue;
             }
     
