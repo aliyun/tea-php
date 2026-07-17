@@ -290,6 +290,7 @@ class RetryTest extends TestCase
         $backoffTime = Dara::getBackoffDelay($options, $context);
         $this->assertTrue($backoffTime >= 100 && $backoffTime <= 200);
 
+        // period * 2^retries: period=5, retries=2 → 5*4=20
         $exponentialPolicy = BackoffPolicy::newBackoffPolicy([
             'policy' => 'Exponential',
             'period' => 5,
@@ -305,7 +306,25 @@ class RetryTest extends TestCase
             'retryable' => true,
             'retryCondition' => [$condition3],
         ]);
-        $this->assertEquals(Dara::getBackoffDelay($options, $context), 1024);
+        $this->assertEquals(Dara::getBackoffDelay($options, $context), 20);
+
+        // period=1000ms must multiply, not enter the exponent
+        $exponentialPolicy = BackoffPolicy::newBackoffPolicy([
+            'policy' => 'Exponential',
+            'period' => 1000,
+            'cap' => 10000,
+        ]);
+        $condition3b = new RetryCondition([
+            'maxAttempts' => 3,
+            'exception' => ['AEx'],
+            'errorCode' => ['A1Ex'],
+            'backoff' => $exponentialPolicy,
+        ]);
+        $options = new RetryOptions([
+            'retryable' => true,
+            'retryCondition' => [$condition3b],
+        ]);
+        $this->assertEquals(Dara::getBackoffDelay($options, $context), 4000);
 
         $exponentialPolicy = BackoffPolicy::newBackoffPolicy([
             'policy' => 'Exponential',
@@ -322,7 +341,7 @@ class RetryTest extends TestCase
             'retryable' => true,
             'retryCondition' => [$condition4],
         ]);
-        $this->assertEquals(Dara::getBackoffDelay($options, $context), 10000);
+        $this->assertEquals(Dara::getBackoffDelay($options, $context), 40);
 
         $equalJitterPolicy = BackoffPolicy::newBackoffPolicy([
             'policy' => 'EqualJitter',
@@ -340,11 +359,11 @@ class RetryTest extends TestCase
             'retryCondition' => [$condition5],
         ]);
         $backoffTime = Dara::getBackoffDelay($options, $context);
-        $this->assertTrue($backoffTime > 512 && $backoffTime < 1024);
+        $this->assertTrue($backoffTime >= 10 && $backoffTime <= 20);
 
         $equalJitterPolicy = BackoffPolicy::newBackoffPolicy([
             'policy' => 'EqualJitter',
-            'period' => 10,
+            'period' => 1000,
             'cap' => 10000,
         ]);
         $condition6 = new RetryCondition([
@@ -358,7 +377,7 @@ class RetryTest extends TestCase
             'retryCondition' => [$condition6],
         ]);
         $backoffTime = Dara::getBackoffDelay($options, $context);
-        $this->assertTrue($backoffTime > 5000 && $backoffTime < 10000);
+        $this->assertTrue($backoffTime >= 2000 && $backoffTime <= 4000);
 
         $fullJitterPolicy = BackoffPolicy::newBackoffPolicy([
             'policy' => 'FullJitter',
@@ -376,7 +395,7 @@ class RetryTest extends TestCase
             'retryCondition' => [$condition7],
         ]);
         $backoffTime = Dara::getBackoffDelay($options, $context);
-        $this->assertTrue($backoffTime >= 0 && $backoffTime < 1024);
+        $this->assertTrue($backoffTime >= 0 && $backoffTime <= 20);
 
         $fullJitterPolicy = BackoffPolicy::newBackoffPolicy([
             'policy' => 'ExponentialWithFullJitter',
