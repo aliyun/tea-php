@@ -21,7 +21,8 @@ class FullJitterBackoffPolicy extends BackoffPolicy {
     }
 
     public function getDelayTime($ctx) {
-        $ceil = min(pow(2, $ctx->getRetryCount() * $this->period), $this->cap);
+        // period * 2^retries (align with C# / standard exponential backoff)
+        $ceil = min($this->period * pow(2, $ctx->getRetryCount()), $this->cap);
         return mt_rand(0, $ceil);
     }
 }

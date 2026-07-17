@@ -21,7 +21,8 @@ class ExponentialBackoffPolicy extends BackoffPolicy {
     }
 
     public function getDelayTime($ctx) {
-        $randomTime = pow(2, $ctx->getRetryCount() * $this->period);
+        // period * 2^retries (align with C# / standard exponential backoff)
+        $randomTime = $this->period * pow(2, $ctx->getRetryCount());
         return ($randomTime > $this->cap) ? $this->cap : $randomTime;
     }
 }
