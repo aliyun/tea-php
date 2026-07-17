@@ -67,11 +67,13 @@ class DaraTest extends TestCase
 
     public static function testSleep()
     {
-        $before = time();
-        Dara::sleep(1);
-        $after = time();
+        $before = microtime(true);
+        Dara::sleep(1000); // 1000ms = 1s
+        $after = microtime(true);
+        $elapsed = $after - $before;
 
-        self::assertTrue($after - $before >= 1);
+        self::assertTrue($elapsed >= 1.0);
+        self::assertTrue($elapsed < 2.0);
     }
 
     public static function testIsRetryable()
