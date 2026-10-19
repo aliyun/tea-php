@@ -21,6 +21,21 @@ class EchoWebSocketServer implements MessageComponentInterface
 
     public function onMessage(ConnectionInterface $from, $msg)
     {
+        $payload = (string) $msg;
+        if ($payload === 'please-close') {
+            $from->close();
+
+            return;
+        }
+        if ($payload === 'please-binary') {
+            $from->send(new \Ratchet\RFC6455\Messaging\Frame(
+                'bin',
+                true,
+                \Ratchet\RFC6455\Messaging\Frame::OP_BINARY
+            ));
+
+            return;
+        }
         $from->send($msg);
     }
 
