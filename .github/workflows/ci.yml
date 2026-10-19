@@ -42,9 +42,12 @@ jobs:
       run: composer unit
 
     - name: Upload Coverage Report
+      if: matrix.php-versions == '8.2'
       uses: codecov/codecov-action@v4
       with:
-        token: ${{ secrets.CODECOV_TOKEN }} # required
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage/coverage.clover
+        fail_ci_if_error: true
 
     - name: Run feature test case
       run: composer feature

@@ -72,7 +72,6 @@ class CEx extends DaraRespException {
 
 /**
  * @internal
- * @coversNothing
  */
 class RetryTest extends TestCase
 {

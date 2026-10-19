@@ -11,7 +11,6 @@ use DateInterval;
 
 /**
  * @internal
- * @coversNothing
  */
 class DateTest extends TestCase
 {
