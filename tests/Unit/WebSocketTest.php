@@ -52,6 +52,14 @@ class ErrorOnConnectHandler extends MockWebSocketHandler
     }
 }
 
+class ErrorOnMessageHandler extends MockWebSocketHandler
+{
+    public function handleRawMessage($session, $message)
+    {
+        throw new Exception('boom');
+    }
+}
+
 /**
  * @internal
  */
@@ -74,7 +82,16 @@ class WebSocketTest extends TestCase
         $command = sprintf('php %s %d > /dev/null 2>&1 & echo $!', escapeshellarg($server), $this->port);
         $output = shell_exec($command);
         $this->pid = (int) trim($output);
-        usleep(300000);
+        $deadline = microtime(true) + 3;
+        while (microtime(true) < $deadline) {
+            $fp = @fsockopen('127.0.0.1', $this->port, $errno, $errstr, 0.2);
+            if (is_resource($fp)) {
+                fclose($fp);
+
+                return;
+            }
+            usleep(50000);
+        }
     }
 
     /**
@@ -270,6 +287,82 @@ class WebSocketTest extends TestCase
 
         self::assertSame(1, $handler->messageReceivedCount);
         self::assertSame('hello websocket', $handler->lastMessage->payload);
+        $client->disconnect();
+    }
+
+    public function testSendBinaryAndHandlerError()
+    {
+        $handler = new ErrorOnMessageHandler();
+        $client = new DefaultWebSocketClient($handler);
+        $request = new Request();
+        $request->protocol = 'http';
+        $request->pathname = '/socket?keep=1';
+        $request->query = ['q' => '1'];
+        $request->headers = [
+            'host' => '127.0.0.1:' . $this->port,
+            'content-length' => '0',
+            'X-Empty' => null,
+            'X-Custom' => 'value',
+        ];
+
+        $client->connect($request, [
+            'connectTimeout' => 5000,
+            'webSocketPingInterval' => 0,
+            'webSocketEnableReconnect' => false,
+        ]);
+        $client->sendBinary('abc');
+        $client->pump(500);
+        self::assertGreaterThanOrEqual(1, $handler->errorCount);
+        $client->close();
+    }
+
+    public function testBinaryFrameAndServerClose()
+    {
+        $handler = new MockWebSocketHandler();
+        $client = new DefaultWebSocketClient($handler);
+        $request = new Request();
+        $request->protocol = 'ws';
+        $request->pathname = '/';
+        $request->headers = ['host' => '127.0.0.1:' . $this->port];
+        $client->connect($request, [
+            'connectTimeout' => 5000,
+            'webSocketPingInterval' => 0,
+            'webSocketEnableReconnect' => false,
+        ]);
+
+        $client->sendText('please-binary');
+        $client->pump(500);
+        self::assertGreaterThanOrEqual(1, $handler->messageReceivedCount);
+        self::assertSame(WebSocketMessageType::BINARY, $handler->lastMessage->type);
+
+        $client->sendText('please-close');
+        $client->pump(500);
+        self::assertGreaterThanOrEqual(1, $handler->errorCount);
+    }
+
+    public function testGracefulReconnect()
+    {
+        $handler = new MockWebSocketHandler();
+        $client = new DefaultWebSocketClient($handler);
+        $request = new Request();
+        $request->protocol = 'ws';
+        $request->pathname = '/';
+        $request->headers = ['host' => '127.0.0.1:' . $this->port];
+
+        $runtime = [
+            'connectTimeout' => 5000,
+            'webSocketPingInterval' => 0,
+            'webSocketEnableReconnect' => true,
+            'webSocketReconnectInterval' => 1,
+            'webSocketMaxReconnectTimes' => 3,
+            'webSocketHandler' => $handler,
+        ];
+        $client->connect($request, $runtime);
+        $previousSessionId = $client->getSessionInfo()->sessionID;
+        $response = $client->reconnectGracefully();
+        self::assertNotNull($response);
+        self::assertTrue($client->isConnected());
+        self::assertSame($previousSessionId, $request->headers['X-Acs-Ws-Session-Id']);
         $client->disconnect();
     }
 }

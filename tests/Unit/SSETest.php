@@ -14,7 +14,6 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- * @coversNothing
  * @method void setUpBeforeClass()
  * @method void tearDownAfterClass()
  */
