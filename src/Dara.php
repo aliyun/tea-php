@@ -216,9 +216,27 @@ class Dara
         return $backOffTime;
     }
 
+    /**
+     * Sleep for the given duration in milliseconds.
+     * Aligns with getBackoffDelay() which returns milliseconds.
+     *
+     * @param int $time duration in milliseconds
+     */
     public static function sleep($time)
     {
-        sleep($time);
+        $ms = (int) $time;
+        if ($ms <= 0) {
+            return;
+        }
+        // usleep() may not support >1s on some platforms; split into sleep + usleep
+        $seconds = (int) ($ms / 1000);
+        $micros = ($ms % 1000) * 1000;
+        if ($seconds > 0) {
+            sleep($seconds);
+        }
+        if ($micros > 0) {
+            usleep($micros);
+        }
     }
 
     public static function isRetryable($retry, $retryTimes = 0)
